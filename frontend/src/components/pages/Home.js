@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client';
 import { gql } from '@apollo/client';
 
 // CSS Components
-import { Grid } from 'semantic-ui-react';
+import { Dimmer, Grid, Loader } from 'semantic-ui-react';
 import PostCard from '../PostCard';
 
 const Home = () => {
@@ -23,7 +23,7 @@ const Home = () => {
       </Grid.Row>
       <Grid.Row>
         {loading ? (
-          <h2>loading posts...</h2>
+          <Loader active content='loading...' style={{ marginTop: '2rem' }} />
         ) : (
           posts &&
           posts.map(post => (
