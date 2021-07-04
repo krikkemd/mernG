@@ -20,6 +20,7 @@ function App() {
   return (
     <Router>
       <Container>
+        {/* Menubar on every page */}
         <MenuBar />
         <Route exact path='/' render={props => <Home {...props} />} />
         <Route exact path='/login' component={Login} />
