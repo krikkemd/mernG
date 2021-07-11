@@ -1,5 +1,3 @@
-import React, { useState } from 'react';
-import { Button, Form } from 'semantic-ui-react';
 import { gql, useMutation } from '@apollo/client';
 import { useForm } from '../../util/hooks';
 
@@ -10,7 +8,7 @@ const Login = ({ history }) => {
   };
 
   // form is a custom hook, see register for original
-  const { values, setValues, errors, setErrors, onChange, onSubmit } = useForm(login, initialState);
+  const { FormComponent, values, setValues, setErrors } = useForm(login, initialState, {}, 'Login');
 
   // callback cause loginUser is not hoisted an cannot be passed
   function login() {
@@ -32,43 +30,8 @@ const Login = ({ history }) => {
     variables: values,
   });
 
-  return (
-    <div className='form__container'>
-      <Form loading={loading} onSubmit={onSubmit} noValidate>
-        <h1 className='heading-1'>Login</h1>
-        <Form.Input
-          label='Username'
-          placeholder='Username..'
-          value={values.username}
-          name='username'
-          type='text'
-          onChange={onChange}
-          error={errors.username && errors.username}
-        />
-        <Form.Input
-          label='Password'
-          placeholder='Password..'
-          value={values.password}
-          name='password'
-          type='password'
-          onChange={onChange}
-          error={errors.password && errors.password}
-        />
-        <Button type='submit' primary>
-          Login
-        </Button>
-        {errors.general && (
-          <div className='ui negative message'>
-            <ul>
-              {Object.values(errors).map(error => (
-                <li key={error}>{error}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </Form>
-    </div>
-  );
+  // Render:
+  return FormComponent(loading);
 };
 
 const LOGIN_USER = gql`

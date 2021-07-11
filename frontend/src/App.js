@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 // Page Components
 import Home from './components/pages/Home';
 import Login from './components/pages/Login';
-import Register from './components/pages/Register';
+import UseFormRegister from './components/pages/UseFormRegister';
 
 // Components
 import MenuBar from './components/MenuBar';
@@ -24,7 +24,7 @@ function App() {
         <MenuBar />
         <Route exact path='/' render={props => <Home {...props} />} />
         <Route exact path='/login' component={Login} />
-        <Route exact path='/register' component={Register} />
+        <Route exact path='/register' component={UseFormRegister} />
       </Container>
     </Router>
   );

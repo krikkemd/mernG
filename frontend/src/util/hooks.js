@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Button, Form } from 'semantic-ui-react';
 
 // useForm is a custom hook we can use for all our forms
 /*
@@ -8,10 +9,16 @@ import { useState } from 'react';
  or 
  { username: '', email: '', password: '', confirmPassword: ''}
 
+ for each passed in field valie a Form.Input is rendered
+
  3) initialsErrors same as above
 
+ 4) title = title of the header and the button text
+
+ 5) loading is passed into the FormComponent itself
+
 */
-export const useForm = (callback, initialState = {}, initialErrors = {}) => {
+export const useForm = (callback, initialState = {}, initialErrors = {}, title) => {
   const [values, setValues] = useState(initialState);
   const [errors, setErrors] = useState(initialErrors);
 
@@ -24,12 +31,44 @@ export const useForm = (callback, initialState = {}, initialErrors = {}) => {
     callback();
   };
 
+  const FormComponent = loading => (
+    <div className='form__container'>
+      <Form loading={loading} onSubmit={onSubmit} noValidate>
+        <h1 className='heading-1'>{title}</h1>
+
+        {Object.keys(values).map(field => (
+          <Form.Input
+            key={field}
+            label={field}
+            placeholder={field}
+            value={values[field]}
+            name={field}
+            type={field === 'password' || field === 'email' ? field : 'text'}
+            onChange={onChange}
+            error={errors[field] && errors[field]}
+          />
+        ))}
+        <Button type='submit' primary>
+          {title}
+        </Button>
+        {errors.general && (
+          <div className='ui negative message'>
+            <ul>
+              {Object.values(errors).map(error => (
+                <li key={error}>{error}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </Form>
+    </div>
+  );
+
   return {
+    FormComponent,
     values,
     setValues,
     errors,
     setErrors,
-    onChange,
-    onSubmit,
   };
 };
