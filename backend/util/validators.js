@@ -19,6 +19,16 @@ module.exports.validateRegisterInput = (username, email, password, confirmPasswo
   } else if (password.length >= 30) {
     errors.password = 'password too long, max 30 characters';
   } else if (password !== confirmPassword) {
+    errors.password = 'passwords do not match';
+  }
+
+  if (confirmPassword === '') {
+    errors.confirmPassword = 'password must not be empty';
+  } else if (confirmPassword.length < 10) {
+    errors.confirmPassword = 'password must have atleast 10 characters';
+  } else if (password.length >= 30) {
+    errors.confirmPassword = 'password too long, max 30 characters';
+  } else if (password !== confirmPassword) {
     errors.confirmPassword = 'passwords do not match';
   }
 

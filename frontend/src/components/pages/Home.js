@@ -1,9 +1,8 @@
 import React from 'react';
-import { useQuery } from '@apollo/client';
-import { gql } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 
 // CSS Components
-import { Dimmer, Grid, Loader } from 'semantic-ui-react';
+import { Grid, Loader } from 'semantic-ui-react';
 import PostCard from '../PostCard';
 
 const Home = () => {

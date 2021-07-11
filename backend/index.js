@@ -11,6 +11,7 @@ const pubsub = new PubSub();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  // cors: true,
   context: ({ req }) => ({ req, pubsub }), // destructure the req object from the incoming request and pass it to the context
 });
 

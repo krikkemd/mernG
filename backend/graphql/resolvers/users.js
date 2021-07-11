@@ -79,7 +79,8 @@ module.exports = {
         console.log(user);
         throw new UserInputError('username or email already taken', {
           errors: {
-            username: 'this username or email has been taken.',
+            username: 'this username or email has been taken',
+            email: 'this username or email has been taken',
           },
         });
       }

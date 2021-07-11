@@ -1,0 +1,9 @@
+.heading-1 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.form__container {
+  width: 400px;
+  margin: auto;
+}
