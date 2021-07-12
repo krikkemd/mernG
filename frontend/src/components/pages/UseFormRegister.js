@@ -16,7 +16,6 @@ const Register = ({ history }) => {
   const { FormComponent, setErrors, setValues, values } = useForm(
     register,
     initialState,
-    {},
     'Register',
   );
 

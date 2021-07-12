@@ -1,24 +1,39 @@
 import { gql, useMutation } from '@apollo/client';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/authContext';
 import { useForm } from '../../util/hooks';
 
 const Login = ({ history }) => {
+  // Authcontext
+  const { user, contextLogin } = useContext(AuthContext);
+
+  // The fields we use in this form
   const initialState = {
     username: '',
     password: '',
   };
 
-  // form is a custom hook, see register for original
-  const { FormComponent, values, setValues, setErrors } = useForm(login, initialState, {}, 'Login');
-
-  // callback cause loginUser is not hoisted an cannot be passed
+  // callback we can pass into our useForm hook, because loginUser() isnt hoisted.
   function login() {
     return loginUser();
   }
 
-  // Mutation
+  // form is a custom hook, see Register.js for original
+  // const {FormComponent, values, ...} are returned from the useForm, based on what we pass in: useForm(callback, initialState, err..)
+  const { FormComponent, values, setValues, setErrors } = useForm(login, initialState, 'Login');
+
+  // Mutation (login user function) it is actually a post request
   const [loginUser, { loading }] = useMutation(LOGIN_USER, {
     update(_, res) {
+      // rename res.data.login to user
+      const {
+        data: { login: user },
+      } = res;
       console.log(res);
+      console.log(user);
+
+      // Add user to the global context
+      contextLogin(user);
       setErrors({});
       setValues(initialState);
       history.push('/');
@@ -34,6 +49,7 @@ const Login = ({ history }) => {
   return FormComponent(loading);
 };
 
+// GQL Mutation
 const LOGIN_USER = gql`
   mutation Login($username: String!, $password: String!) {
     login(username: $username, password: $password) {

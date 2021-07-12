@@ -9,18 +9,20 @@ import { Button, Form } from 'semantic-ui-react';
  or 
  { username: '', email: '', password: '', confirmPassword: ''}
 
- for each passed in field valie a Form.Input is rendered
+ for each passed in field value a Form.Input is rendered
+ field types:
+  a) if the field is 'confirmPassword': type = 'password'
+  b) if the field is password: type = 'password'
+  c) if the field is email: type = 'email'
+  d) else the field type = 'text'
 
- 3) initialsErrors same as above
-
- 4) title = title of the header and the button text
-
- 5) loading is passed into the FormComponent itself
-
+3) title = title of the header and the button text
+4) semantic ui 'loading' is passed into the FormComponent(loading) <- itself, because it cannot be accessed earlier 
+  this is for the form to show a loading animation on submit
 */
-export const useForm = (callback, initialState = {}, initialErrors = {}, title) => {
+export const useForm = (callback, initialState = {}, title) => {
   const [values, setValues] = useState(initialState);
-  const [errors, setErrors] = useState(initialErrors);
+  const [errors, setErrors] = useState({});
 
   const onChange = e => {
     setValues({ ...values, [e.target.name]: e.target.value });
@@ -43,7 +45,13 @@ export const useForm = (callback, initialState = {}, initialErrors = {}, title) 
             placeholder={field}
             value={values[field]}
             name={field}
-            type={field === 'password' || field === 'email' ? field : 'text'}
+            type={
+              field === 'confirmPassword'
+                ? 'password'
+                : field === 'password' || field === 'email'
+                ? field
+                : 'text'
+            }
             onChange={onChange}
             error={errors[field] && errors[field]}
           />
@@ -64,6 +72,7 @@ export const useForm = (callback, initialState = {}, initialErrors = {}, title) 
     </div>
   );
 
+  // these returned values can be destructered from the useForm() funtion call
   return {
     FormComponent,
     values,
