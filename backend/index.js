@@ -5,21 +5,31 @@ require('dotenv').config();
 
 const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 async function startApolloServer() {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    context: ({ req, res }) => ({ req, res }), // destructure the req object from the incoming request and pass it to the context
   });
   await server.start();
 
   const app = express();
 
   // Additional middleware can be mounted at this point to run before Apollo.
-  // app.use('*', jwtCheck, requireAuth, checkScope);
+  app.use(cookieParser());
+  app.use(
+    cors({
+      origin: ['https://studio.apollographql.com', 'http://localhost:3000'],
+      credentials: true,
+    }),
+  );
 
   // Mount Apollo middleware here.
-  server.applyMiddleware({ app, path: '/specialUrl' });
+  // server.applyMiddleware({ app, path: '/specialUrl' });
+  server.applyMiddleware({ app });
   // await new Promise(resolve => app.listen({ port: 4000 }, resolve));
 
   //   // Connect to mongoDB, then start the server
