@@ -2,7 +2,7 @@ const User = require('../../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const { UserInputError } = require('apollo-server');
+const { UserInputError } = require('apollo-server-express');
 const { validateRegisterInput, validateLoginInput } = require('../../util/validators');
 
 function generateToken(user) {
@@ -14,6 +14,18 @@ function generateToken(user) {
     },
     process.env.JWT_SECRET,
     {
+      expiresIn: '10s',
+    },
+  );
+}
+
+function generateRefreshToken(userId) {
+  return jwt.sign(
+    {
+      id: userId,
+    },
+    process.env.REFRESH_SECRET,
+    {
       expiresIn: '1h',
     },
   );
@@ -21,8 +33,10 @@ function generateToken(user) {
 
 module.exports = {
   Mutation: {
-    async login(parent, args) {
+    async login(parent, args, context) {
+      console.log('running login mutation in users resolver');
       let { username, password } = args;
+      const { res } = context;
 
       // checks if values are not empty
       const { valid, errors } = validateLoginInput(username, password);
@@ -49,8 +63,12 @@ module.exports = {
         throw new UserInputError('wrong credentials', { errors });
       }
 
-      // credentials are correct at this point
+      // credentials are correct at this point -> login successful
       const token = generateToken(user);
+
+      res.cookie('refresh', generateRefreshToken(user._id), {
+        httpOnly: true,
+      });
 
       return {
         ...user._doc,

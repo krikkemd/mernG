@@ -1,4 +1,4 @@
-const { AuthenticationError } = require('apollo-server');
+const { AuthenticationError } = require('apollo-server-express');
 const jwt = require('jsonwebtoken');
 
 // 1) The apollo server receives the (express) request object, and forwards it to the context so we can access it in our resolvers contexts.
@@ -20,6 +20,7 @@ module.exports = context => {
         */
 
         const user = jwt.verify(token, process.env.JWT_SECRET);
+        // context.user = user
         return user;
       } catch (error) {
         throw new AuthenticationError('invalid or expired token');
