@@ -29,7 +29,8 @@ async function startApolloServer() {
 
   // Mount Apollo middleware here.
   // server.applyMiddleware({ app, path: '/specialUrl' });
-  server.applyMiddleware({ app });
+  server.applyMiddleware({ app, cors: false }); // DISABLE CORS FROM APOLLO FOR EXPRESS TO WORK!!!
+
   // await new Promise(resolve => app.listen({ port: 4000 }, resolve));
 
   //   // Connect to mongoDB, then start the server
