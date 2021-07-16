@@ -7,8 +7,7 @@ import { useForm } from '../../util/hooks';
 import { LOGIN_USER } from '../../graphql/auth.js';
 
 // GQL Queries
-import { GET_POSTS } from '../../graphql/posts.js';
-import { getAccessToken, setAccessToken } from '../../util/accessToken';
+import { setAccessToken } from '../../util/accessToken';
 
 const Login = ({ history }) => {
   // Authcontext
@@ -33,14 +32,13 @@ const Login = ({ history }) => {
   const [loginUser, { loading }] = useMutation(LOGIN_USER, {
     onCompleted(data) {
       const { login: user } = data;
+      setAccessToken(user.token);
 
+      contextLogin(user);
       setErrors({});
       setValues(initialState);
 
       history.push('/');
-      setAccessToken(user.token);
-
-      contextLogin(user);
     },
 
     onError(err) {
