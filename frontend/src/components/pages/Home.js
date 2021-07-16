@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { useQuery, useLazyQuery } from '@apollo/client';
+import React, { useContext, useEffect } from 'react';
+import { useLazyQuery } from '@apollo/client';
 
 // Context
 import { AuthContext } from '../../context/authContext';
@@ -17,7 +17,12 @@ const Home = () => {
   const { user } = useContext(AuthContext);
   console.log(user);
 
-  const { loading, data } = useQuery(GET_POSTS);
+  const [myQueryExecutor, { loading, data }] = useLazyQuery(GET_POSTS);
+
+  useEffect(() => {
+    myQueryExecutor();
+  }, [myQueryExecutor]);
+
   let posts;
 
   // data.getPosts holds the posts, which is confusing. add posts to posts variable
@@ -27,9 +32,7 @@ const Home = () => {
     posts = data.getPosts;
   }
 
-  const [getBye, byeData] = useLazyQuery(BYE, {
-    fetchPolicy: 'network-only',
-  });
+  const [getBye, byeData] = useLazyQuery(BYE); // cached!
 
   if (byeData.data) {
     console.log(byeData.data);
