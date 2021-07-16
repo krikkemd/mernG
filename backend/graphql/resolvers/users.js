@@ -5,31 +5,7 @@ const jwt = require('jsonwebtoken');
 const { UserInputError } = require('apollo-server-express');
 const { validateRegisterInput, validateLoginInput } = require('../../util/validators');
 
-function generateToken(user) {
-  return jwt.sign(
-    {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-    },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: '10s',
-    },
-  );
-}
-
-function generateRefreshToken(userId) {
-  return jwt.sign(
-    {
-      id: userId,
-    },
-    process.env.REFRESH_SECRET,
-    {
-      expiresIn: '1h',
-    },
-  );
-}
+const { generateToken, generateRefreshToken } = require('../../util/tokens');
 
 module.exports = {
   Mutation: {
@@ -46,7 +22,7 @@ module.exports = {
       }
 
       // check if the user exists in the db
-      const user = await User.findOne({ username });
+      const user = await User.findOne({ username }).select('+password');
 
       // throw error if user is not found
       if (!user) {

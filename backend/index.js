@@ -8,6 +8,10 @@ const resolvers = require('./graphql/resolvers');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
+const jwt = require('jsonwebtoken');
+const User = require('./models/User');
+const { generateToken, generateRefreshToken } = require('./util/tokens');
+
 async function startApolloServer() {
   const server = new ApolloServer({
     typeDefs,
@@ -26,6 +30,39 @@ async function startApolloServer() {
       credentials: true,
     }),
   );
+
+  // Routes
+  app.get('/', (req, res) => res.send('hello'));
+  app.post('/refresh_token', async (req, res) => {
+    console.log(req.cookies);
+    const refreshToken = req.cookies.refresh;
+
+    if (!refreshToken) {
+      return res.send({ accessToken: '', message: 'no token provided ' });
+    }
+
+    let payload;
+    try {
+      payload = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
+    } catch (error) {
+      console.log(error);
+      return res.send({ accessToken: '', error });
+    }
+
+    console.log(payload.id);
+    // refresh token is valid, we can send back an access token
+    const user = await User.findOne({ _id: payload.id });
+
+    if (!user) {
+      return res.send({ accessToken: '', user: 'nope' });
+    }
+
+    res.cookie('refresh', generateRefreshToken(user._id), {
+      httpOnly: true,
+    });
+
+    return res.send({ accessToken: generateToken(user) });
+  });
 
   // Mount Apollo middleware here.
   // server.applyMiddleware({ app, path: '/specialUrl' });

@@ -1,11 +1,18 @@
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useContext } from 'react';
 import { AuthContext } from '../../context/authContext';
 import { useForm } from '../../util/hooks';
 
+// GQL Mutations
+import { LOGIN_USER } from '../../graphql/auth.js';
+
+// GQL Queries
+import { GET_POSTS } from '../../graphql/posts.js';
+import { getAccessToken, setAccessToken } from '../../util/accessToken';
+
 const Login = ({ history }) => {
   // Authcontext
-  const { user, contextLogin } = useContext(AuthContext);
+  const { contextLogin } = useContext(AuthContext);
 
   // The fields we use in this form
   const initialState = {
@@ -24,22 +31,20 @@ const Login = ({ history }) => {
 
   // Mutation (login user function) it is actually a post request
   const [loginUser, { loading }] = useMutation(LOGIN_USER, {
-    update(_, res) {
-      // rename res.data.login to user
-      const {
-        data: { login: user },
-      } = res;
-      console.log(res);
-      console.log(user);
+    onCompleted(data) {
+      const { login: user } = data;
 
-      // Add user to the global context
-      contextLogin(user);
       setErrors({});
       setValues(initialState);
+
       history.push('/');
+      setAccessToken(user.token);
+
+      contextLogin(user);
     },
+
     onError(err) {
-      console.log(err.graphQLErrors[0].extensions.errors);
+      console.log(err.graphQLErrors[0]);
       setErrors(err.graphQLErrors[0].extensions.errors);
     },
     variables: values,
@@ -48,17 +53,5 @@ const Login = ({ history }) => {
   // Render:
   return FormComponent(loading);
 };
-
-// GQL Mutation
-const LOGIN_USER = gql`
-  mutation Login($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
-      id
-      username
-      email
-      token
-    }
-  }
-`;
 
 export default Login;

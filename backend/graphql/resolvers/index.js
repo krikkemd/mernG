@@ -1,6 +1,7 @@
 const postsResolvers = require('./posts');
 const usersResolvers = require('./users');
 const commentsResolvers = require('./comments');
+const byeResolvers = require('./bye');
 
 module.exports = {
   /* Modifier for Post(name of the type)
@@ -9,7 +10,7 @@ module.exports = {
   */
   Post: {
     likeCount: parent => {
-      console.log('pre QUERY POST for each post that is returned');
+      // console.log('pre QUERY POST for each post that is returned');
       // Parent will hold the data that is returned: getPosts= all the posts, getPost is just that post
       return parent.likes.length;
     },
@@ -17,6 +18,7 @@ module.exports = {
   },
   Query: {
     ...postsResolvers.Query,
+    ...byeResolvers.Query,
   },
   Mutation: {
     ...usersResolvers.Mutation,

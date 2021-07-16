@@ -4,7 +4,9 @@ const checkAuth = require('../../util/check-auth');
 
 module.exports = {
   Query: {
-    async getPosts() {
+    async getPosts(_, __, context) {
+      console.log('getPosts');
+      checkAuth(context);
       try {
         const posts = Post.find().sort({ createdAt: -1 });
         return posts;
@@ -27,6 +29,8 @@ module.exports = {
   },
   Mutation: {
     async createPost(parent, { body }, context) {
+      console.log('createPost');
+
       // if this passes, there is a user logged in and we can proceed
       const user = checkAuth(context);
       console.log(user);
@@ -51,6 +55,8 @@ module.exports = {
       return post;
     },
     async deletePost(parent, { postId }, context) {
+      console.log('deletePost');
+
       const user = checkAuth(context);
 
       // check if user is post owner / author
@@ -68,6 +74,8 @@ module.exports = {
       }
     },
     async likePost(parent, { postId }, context) {
+      console.log('likePost');
+
       // 1) check if the user is authenticated
       const { username } = checkAuth(context);
 

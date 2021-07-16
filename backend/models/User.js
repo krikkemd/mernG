@@ -13,7 +13,10 @@ const userSchema = new Schema({
     lowercase: true,
     trim: true,
   },
-  password: String,
+  password: {
+    type: String,
+    select: false,
+  },
   createdAt: String,
 });
 

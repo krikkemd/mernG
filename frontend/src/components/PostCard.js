@@ -4,8 +4,6 @@ import { Button, Card, Image } from 'semantic-ui-react';
 import moment from 'moment';
 
 const PostCard = ({ post: { id, username, body, createdAt, likeCount, likes, commentCount } }) => {
-  console.log(likeCount);
-
   //   Local functions
   const likePost = () => console.log('like post');
   const commentOnPost = () => console.log('comment on post');
