@@ -1,12 +1,11 @@
-import { createContext, useReducer, useEffect } from 'react';
+import { createContext, useReducer, useEffect, useState } from 'react';
 import { LOADING_FALSE, LOGIN_USER, LOGOUT_USER } from './types';
-import { setAccessToken } from '../util/accessToken';
-import jwtDecode from 'jwt-decode';
+import { setAccessTokenInMemory } from '../util/accessToken';
 import { Loader } from 'semantic-ui-react';
+import jwtDecode from 'jwt-decode';
 
 const initialState = {
   user: null,
-  loading: true,
   contextLogin: userData => {},
   contextLogout: () => {},
 };
@@ -26,11 +25,6 @@ const authReducer = (state, action) => {
         ...state,
         user: null,
       };
-    case LOADING_FALSE:
-      return {
-        ...state,
-        loading: false,
-      };
     default:
       return state;
   }
@@ -40,44 +34,44 @@ const authReducer = (state, action) => {
 function AuthProvider(props) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  const refreshTokenFunction = () => {
+  // standaard loading tot dat accessToken in memory is gezet, zodat die wordt toegevoegd aan de headers
+  const [loading, setLoading] = useState(true);
+
+  // make a post request with the refCookie which has the refreshtoken, if refToken is valid. we get an accessToken back
+  const refreshToken = () => {
     fetch('http://localhost:4000/refresh_token', {
-      credentials: 'include',
       method: 'POST',
+      credentials: 'include',
     }).then(async res => {
-      const { accessToken } = await res.json();
+      // we receive the accessToken inside this data, if the refreshtoken was valid
+      // no need to check more
+      const data = await res.json();
+      console.log(data);
 
-      if (!accessToken) {
-        contextLogout();
+      if (data.accessToken) {
+        // store the access token in memory, so it can be added to the headers. This is async, so we are loading before this is complete
+        setAccessTokenInMemory(data.accessToken);
+
+        // decode the accessToken which contains userdata
+        const user = jwtDecode(data.accessToken);
+
+        // silently refresh the accessToken just before it expires using the post request with the refresh token
+        setTimeout(() => {
+          refreshToken();
+        }, 5000);
+
+        // add the userdata to the context from the decoded accessToken
+        contextLogin(user);
       }
 
-      if (accessToken) {
-        setAccessToken(accessToken);
-        const decoded = jwtDecode(accessToken);
-        console.log(decoded);
-
-        contextLogin(decoded); // decoded token = user
-
-        setTimeout(async () => {
-          setAccessToken(accessToken);
-
-          contextLogin(decoded);
-          refreshTokenFunction();
-        }, 29000);
-      }
-
-      // setLoading(false);
-      // loadingFalse();
+      // accessToken is set to memory, and user is set to context at this point. we can stop loading, and render our app
+      setLoading(false);
     });
   };
 
-  // useEffect(() => {
-  //   refreshTokenFunction();
-  // }, []);
-
-  const loadingFalse = () => {
-    dispatch({ type: LOADING_FALSE });
-  };
+  useEffect(() => {
+    refreshToken();
+  }, []);
 
   const contextLogin = userData => {
     console.log(userData);
@@ -88,15 +82,12 @@ function AuthProvider(props) {
     dispatch({ type: LOGOUT_USER });
   };
 
-  // if (state.loading) {
-  //   return <Loader active content='loading...'></Loader>;
-  // }
+  if (loading) {
+    return <Loader active content='loading...'></Loader>;
+  }
 
   return (
-    <AuthContext.Provider
-      value={{ user: state.user, contextLogin, contextLogout, loading: state.loading }}
-      {...props}
-    />
+    <AuthContext.Provider value={{ user: state.user, contextLogin, contextLogout }} {...props} />
   );
 }
 

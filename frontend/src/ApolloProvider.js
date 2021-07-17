@@ -9,7 +9,7 @@ import {
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 
-import { getAccessToken } from './util/accessToken';
+import { getAccessTokenFromMemory } from './util/accessToken';
 
 const httpLink = createHttpLink({
   credentials: 'include',
@@ -17,11 +17,13 @@ const httpLink = createHttpLink({
 });
 
 const authLink = setContext((_, { headers }) => {
-  const token = getAccessToken();
+  // accesToken is set after successful login, so we get it here, and add it to the headers for every next http request
+  const accessToken = getAccessTokenFromMemory();
+  console.log(`accessToken: ${accessToken}`);
   return {
     headers: {
       ...headers,
-      authorization: token ? `Bearer ${token}` : 'NO TOKEN PROVIDED',
+      authorization: accessToken ? `Bearer ${accessToken}` : 'NO ACCESSTOKEN PROVIDED',
     },
   };
 });

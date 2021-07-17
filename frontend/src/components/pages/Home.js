@@ -15,7 +15,7 @@ const Home = () => {
   // here we run the useQuery() Hook, and we pass it the grapql Query
   // we destructure loading, and data from the useQuery(GET_POSTS)
   const { user } = useContext(AuthContext);
-  console.log(user);
+  console.log(`user: ${user}`);
 
   const [myQueryExecutor, { loading, data }] = useLazyQuery(GET_POSTS);
 
@@ -32,7 +32,9 @@ const Home = () => {
     posts = data.getPosts;
   }
 
-  const [getBye, byeData] = useLazyQuery(BYE); // cached!
+  const [getBye, byeData] = useLazyQuery(BYE, {
+    fetchPolicy: 'network-only',
+  }); // cached!
 
   if (byeData.data) {
     console.log(byeData.data);
@@ -45,7 +47,7 @@ const Home = () => {
       {/* Loading */}
       {loading ? (
         <Loader active content='loading...' style={{ marginTop: '2rem' }} />
-      ) : // Authenticated
+      ) : // user is set: Authenticated
       user ? (
         <Grid columns={3}>
           <Grid.Row centered style={{ marginTop: '2rem' }}>
@@ -73,7 +75,7 @@ const Home = () => {
           </Grid.Row>
         </Grid>
       ) : (
-        // Not authenticated
+        // user: null: Not authenticated
         <div>Not Authenticated</div>
       )}
     </div>

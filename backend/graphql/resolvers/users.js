@@ -42,8 +42,11 @@ module.exports = {
       // credentials are correct at this point -> login successful
       const token = generateToken(user);
 
-      res.cookie('refresh', generateRefreshToken(user._id), {
+      // store a jwt inside a cookie
+      res.cookie('refCookie', generateRefreshToken(user._id), {
         httpOnly: true,
+        sameSite: true,
+        expires: new Date(Date.now() + 1 * 3600000), // 1 hour
       });
 
       return {

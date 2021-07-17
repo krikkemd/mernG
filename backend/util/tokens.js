@@ -9,7 +9,7 @@ exports.generateToken = user => {
     },
     process.env.JWT_SECRET,
     {
-      expiresIn: '30s',
+      expiresIn: '6s',
     },
   );
 };
@@ -21,7 +21,7 @@ exports.generateRefreshToken = userId => {
     },
     process.env.REFRESH_SECRET,
     {
-      expiresIn: '1m',
+      expiresIn: '10s',
     },
   );
 };

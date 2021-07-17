@@ -34,33 +34,55 @@ async function startApolloServer() {
   // Routes
   app.get('/', (req, res) => res.send('hello'));
   app.post('/refresh_token', async (req, res) => {
+    // console.log(req.headers);
     console.log(req.cookies);
-    const refreshToken = req.cookies.refresh;
 
+    // cookie has a jwt token stored inside (refresh_token)
+    const refreshToken = req.cookies.refCookie; // we can access the token from thr refCookie because of cookieParser
+    console.log(refreshToken); // The actual jwt inside the cookie
+
+    // If there isnt a refresh token (cookie)
     if (!refreshToken) {
-      return res.send({ accessToken: '', message: 'no token provided ' });
+      console.log('REFRESH COOKIE NOT PRESENT ON HEADERS');
+      return res.send({ accessToken: '', message: 'cookie not present' });
     }
 
-    let payload;
+    let payload; // the payload is whatever you stored in the refToken (userId)
+
+    // There is a refCookie present, verify the refToken, check if it isnt expired.. or malformed
     try {
       payload = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
     } catch (error) {
       console.log(error);
-      return res.send({ accessToken: '', error });
+      return res.send({
+        accessToken: '',
+        error,
+        message: 'cookie was present, but jwt verify failed',
+      });
     }
 
-    console.log(payload.id);
+    // refToken is VALID at this point
+
+    console.log(payload.id); // payload === decodedToken = mongodb userId
     // refresh token is valid, we can send back an access token
+
+    // Find the user using the userId from the decoded RefToken
     const user = await User.findOne({ _id: payload.id });
 
     if (!user) {
       return res.send({ accessToken: '', user: 'nope' });
     }
 
-    res.cookie('refresh', generateRefreshToken(user._id), {
+    // send a new refCookie, with a new refresh token, storing again, the userId
+    res.cookie('refCookie', generateRefreshToken(user._id), {
       httpOnly: true,
+      expires: new Date(Date.now() + 1 * 3600000), // 1 hour
     });
 
+    console.log(user); // the user from the DB
+
+    // Send back an accessToken, again with the user stored
+    // We zouden ook de user al terug kunnen sturen hier ipv decoden client side
     return res.send({ accessToken: generateToken(user) });
   });
 
