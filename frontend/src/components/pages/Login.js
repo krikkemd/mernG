@@ -40,11 +40,15 @@ const Login = ({ history }) => {
       /* 
       Update:
       We krijgen niet langer de accessToken terug
-      ipv daarvan callen we initialLoginRefreshToken()
-      deze functie maakt een post req naar /refresh_token
+      ipv daarvan callen we refreshToken(true) = loading
+      loading geeft ons tijd om het accesstoken te verkrijgen en toe te voegen aan de headers voor dat de app wordt gerendered (netwerk req)
+      deze functie maakt een post request naar /refresh_token
       we krijgen het accessToken terug van de post request
+      token is decoded = user
       daarna zetten we contextLogin(user)
+      daarna wordt loading gestopt en de app gerenderd met accesToken in de headers, en user set to context
       */
+
       refreshToken(true); // true here means the app should be loading
       // contextLogin(user);
 
