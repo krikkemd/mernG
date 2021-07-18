@@ -10,7 +10,7 @@ const cors = require('cors');
 
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
-const { generateToken, generateRefreshToken, sendRefCookie } = require('./util/tokens');
+const { generateAccessToken, generateRefreshToken, sendRefCookie } = require('./util/tokens');
 
 async function startApolloServer() {
   const server = new ApolloServer({
@@ -81,13 +81,13 @@ async function startApolloServer() {
     //   expires: new Date(Date.now() + 1 * 3600000), // 1 hour
     // });
 
-    sendRefCookie(res, user._id); // // also signs and stores refToken
+    sendRefCookie(res, user._id); // also signs and stores refToken
 
     console.log(user); // the user from the DB
 
     // Send back an accessToken, again with the user stored
     // We zouden ook de user al terug kunnen sturen hier ipv decoden client side
-    return res.send({ accessToken: generateToken(user) });
+    return res.send({ accessToken: generateAccessToken(user) });
   });
 
   // Mount Apollo middleware here.

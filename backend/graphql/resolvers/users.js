@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const { UserInputError } = require('apollo-server-express');
 const { validateRegisterInput, validateLoginInput } = require('../../util/validators');
 
-const { generateToken, generateRefreshToken, sendRefCookie } = require('../../util/tokens');
+const { generateAccessToken, generateRefreshToken, sendRefCookie } = require('../../util/tokens');
 
 module.exports = {
   Mutation: {
@@ -40,7 +40,7 @@ module.exports = {
       }
 
       // credentials are correct at this point -> login successful
-      // const token = generateToken(user);
+      // const token = generateAccessToken(user);
       /* UPDATE 
       1) we no longer generate and send the accesstoken on login. 
 
@@ -112,17 +112,7 @@ module.exports = {
 
       const result = await newUser.save();
 
-      // const token = generateToken(result);
-
-      // store a jwt inside a cookie
-      // res.cookie('refCookie', generateRefreshToken(result._id), {
-      //   httpOnly: true,
-      //   sameSite: true,
-      //   path: '/refresh_token',
-      //   expires: new Date(Date.now() + 1 * 3600000), // 1 hour
-      // });
-
-      sendRefCookie(res, result._id);
+      sendRefCookie(res, result._id); // also signs and stores refToken
 
       return {
         ...result._doc,
