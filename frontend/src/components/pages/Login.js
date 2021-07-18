@@ -11,7 +11,7 @@ import { setAccessTokenInMemory } from '../../util/accessToken';
 
 const Login = ({ history }) => {
   // Authcontext
-  const { contextLogin } = useContext(AuthContext);
+  const { contextLogin, refreshToken } = useContext(AuthContext);
 
   // The fields we use in this form
   const initialState = {
@@ -35,9 +35,19 @@ const Login = ({ history }) => {
       console.log(data);
       // hier krijgen we de accessToken terug!
       // We moeten de acccesstoken storen in memory, zodat hij defined is in de headers voor het volgende netwerkrequest
-      setAccessTokenInMemory(user.token);
+      // setAccessTokenInMemory(user.token);
 
-      contextLogin(user);
+      /* 
+      Update:
+      We krijgen niet langer de accessToken terug
+      ipv daarvan callen we initialLoginRefreshToken()
+      deze functie maakt een post req naar /refresh_token
+      we krijgen het accessToken terug van de post request
+      daarna zetten we contextLogin(user)
+      */
+      refreshToken(true); // true here means the app should be loading
+      // contextLogin(user);
+
       setErrors({});
       setValues(initialState);
 
@@ -45,7 +55,7 @@ const Login = ({ history }) => {
     },
 
     onError(err) {
-      console.log(err.graphQLErrors[0]);
+      console.log(err);
       setErrors(err.graphQLErrors[0].extensions.errors);
     },
     variables: values,

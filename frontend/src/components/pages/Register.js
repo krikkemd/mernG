@@ -105,7 +105,7 @@ const REGISTER_USER = gql`
       id
       username
       email
-      token
+      # token
     }
   }
 `;

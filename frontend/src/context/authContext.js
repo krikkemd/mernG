@@ -37,8 +37,14 @@ function AuthProvider(props) {
   // standaard loading tot dat accessToken in memory is gezet, zodat die wordt toegevoegd aan de headers
   const [loading, setLoading] = useState(true);
 
+  // loading wanneer de user daadwerkelijk inlogt, we kunnen loading hierboven niet gebruiken omdat de functie zichzelf called met timer
+  // dan zou de app elke keer loaden wanneer refreshToken() wordt gecalled, dus eenmalig loading op login
+  const [loadOnLogin, setLoadOnLogin] = useState(false);
+
   // make a post request with the refCookie which has the refreshtoken, if refToken is valid. we get an accessToken back
-  const refreshToken = () => {
+  // takes a parameter whether the app should load when this fn is called. (it should when we submit login form, but not when called by itself)
+  const refreshToken = appShouldLoad => {
+    setLoadOnLogin(appShouldLoad);
     fetch('http://localhost:4000/refresh_token', {
       method: 'POST',
       credentials: 'include',
@@ -57,6 +63,7 @@ function AuthProvider(props) {
 
         // silently refresh the accessToken just before it expires using the post request with the refresh token
         setTimeout(() => {
+          console.log('timer running');
           refreshToken();
         }, 5000);
 
@@ -66,6 +73,7 @@ function AuthProvider(props) {
 
       // accessToken is set to memory, and user is set to context at this point. we can stop loading, and render our app
       setLoading(false);
+      setLoadOnLogin(false);
     });
   };
 
@@ -82,12 +90,15 @@ function AuthProvider(props) {
     dispatch({ type: LOGOUT_USER });
   };
 
-  if (loading) {
+  if (loading || loadOnLogin) {
     return <Loader active content='loading...'></Loader>;
   }
 
   return (
-    <AuthContext.Provider value={{ user: state.user, contextLogin, contextLogout }} {...props} />
+    <AuthContext.Provider
+      value={{ user: state.user, contextLogin, contextLogout, refreshToken }}
+      {...props}
+    />
   );
 }
 

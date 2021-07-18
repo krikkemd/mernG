@@ -40,7 +40,20 @@ module.exports = {
       }
 
       // credentials are correct at this point -> login successful
-      const token = generateToken(user);
+      // const token = generateToken(user);
+      /* UPDATE 
+      1) we no longer generate and send the accesstoken on login. 
+
+      2) token is removed from User typeDef
+
+      3) token is removed from query output
+      
+      4) instead we only send the refCookie holding the refToken, and make a post request to /refresh_token
+
+      5) the post request to /refresh_token will return us the accessToken
+      */
+
+      console.log('credentials are correct at this point -> login successful');
 
       // store a jwt inside a cookie
       res.cookie('refCookie', generateRefreshToken(user._id), {
@@ -52,11 +65,13 @@ module.exports = {
       return {
         ...user._doc,
         id: user._id,
-        token,
+        // token,
       };
     },
 
     async register(parent, args) {
+      console.log('running register mutation in user resolver');
+
       // destructure incoming data from the args
       let {
         registerInput: { username, email, password, confirmPassword },
@@ -94,12 +109,12 @@ module.exports = {
 
       const res = await newUser.save();
 
-      const token = generateToken(res);
+      // const token = generateToken(res);
 
       return {
         ...res._doc,
         id: res._id,
-        token,
+        // token,
       };
     },
   },

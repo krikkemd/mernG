@@ -1,5 +1,6 @@
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useForm } from '../../util/hooks';
+import { REGISTER_USER } from '../../graphql/auth';
 
 const Register = ({ history }) => {
   const initialState = {
@@ -24,7 +25,7 @@ const Register = ({ history }) => {
       console.log(res);
       setErrors({});
       setValues(initialState);
-      history.push('/');
+      history.push('/login');
     },
     onError(err) {
       console.log(err.graphQLErrors[0].extensions.errors);
@@ -35,28 +36,5 @@ const Register = ({ history }) => {
 
   return FormComponent(loading);
 };
-
-const REGISTER_USER = gql`
-  mutation Register(
-    $username: String!
-    $email: String!
-    $password: String!
-    $confirmPassword: String!
-  ) {
-    register(
-      registerInput: {
-        username: $username
-        email: $email
-        password: $password
-        confirmPassword: $confirmPassword
-      }
-    ) {
-      id
-      username
-      email
-      token
-    }
-  }
-`;
 
 export default Register;
