@@ -14,7 +14,7 @@ exports.generateToken = user => {
   );
 };
 
-exports.generateRefreshToken = userId => {
+const generateRefreshToken = userId => {
   return jwt.sign(
     {
       id: userId,
@@ -25,3 +25,14 @@ exports.generateRefreshToken = userId => {
     },
   );
 };
+
+exports.sendRefCookie = (res, userId) => {
+  return res.cookie('refCookie', generateRefreshToken(userId), {
+    httpOnly: true,
+    path: '/refresh_token',
+    sameSite: true,
+    expires: new Date(Date.now() + 1 * 3600000), // 1 hour
+  });
+};
+
+exports.generateRefreshToken = generateRefreshToken;

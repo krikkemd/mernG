@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const { UserInputError } = require('apollo-server-express');
 const { validateRegisterInput, validateLoginInput } = require('../../util/validators');
 
-const { generateToken, generateRefreshToken } = require('../../util/tokens');
+const { generateToken, generateRefreshToken, sendRefCookie } = require('../../util/tokens');
 
 module.exports = {
   Mutation: {
@@ -56,11 +56,14 @@ module.exports = {
       console.log('credentials are correct at this point -> login successful');
 
       // store a jwt inside a cookie
-      res.cookie('refCookie', generateRefreshToken(user._id), {
-        httpOnly: true,
-        sameSite: true,
-        expires: new Date(Date.now() + 1 * 3600000), // 1 hour
-      });
+      // res.cookie('refCookie', generateRefreshToken(user._id), {
+      //   httpOnly: true,
+      //   sameSite: true,
+      //   path: '/refresh_token',
+      //   expires: new Date(Date.now() + 1 * 3600000), // 1 hour
+      // });
+
+      sendRefCookie(res, user._id); // also signs and stores refToken
 
       return {
         ...user._doc,
@@ -112,11 +115,14 @@ module.exports = {
       // const token = generateToken(result);
 
       // store a jwt inside a cookie
-      res.cookie('refCookie', generateRefreshToken(result._id), {
-        httpOnly: true,
-        sameSite: true,
-        expires: new Date(Date.now() + 1 * 3600000), // 1 hour
-      });
+      // res.cookie('refCookie', generateRefreshToken(result._id), {
+      //   httpOnly: true,
+      //   sameSite: true,
+      //   path: '/refresh_token',
+      //   expires: new Date(Date.now() + 1 * 3600000), // 1 hour
+      // });
+
+      sendRefCookie(res, result._id);
 
       return {
         ...result._doc,

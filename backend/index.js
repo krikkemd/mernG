@@ -10,7 +10,7 @@ const cors = require('cors');
 
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
-const { generateToken, generateRefreshToken } = require('./util/tokens');
+const { generateToken, generateRefreshToken, sendRefCookie } = require('./util/tokens');
 
 async function startApolloServer() {
   const server = new ApolloServer({
@@ -74,10 +74,14 @@ async function startApolloServer() {
     }
 
     // send a new refCookie, with a new refresh token, storing again, the userId
-    res.cookie('refCookie', generateRefreshToken(user._id), {
-      httpOnly: true,
-      expires: new Date(Date.now() + 1 * 3600000), // 1 hour
-    });
+    // res.cookie('refCookie', generateRefreshToken(user._id), {
+    //   httpOnly: true,
+    //   path: '/refresh_token',
+    //   sameSite: true,
+    //   expires: new Date(Date.now() + 1 * 3600000), // 1 hour
+    // });
+
+    sendRefCookie(res, user._id); // // also signs and stores refToken
 
     console.log(user); // the user from the DB
 
