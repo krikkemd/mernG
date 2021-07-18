@@ -120,5 +120,17 @@ module.exports = {
         // token,
       };
     },
+
+    async logout(parent, args, { res }) {
+      console.log('running logout mutation in user resolver');
+      res.cookie('refCookie', '', {
+        httpOnly: true,
+        path: '/refresh_token',
+        sameSite: true,
+        expires: new Date(Date.now()), // expire cookie immediately, basically remove it. it wont be present on the headers
+      });
+
+      return 'logged out!';
+    },
   },
 };

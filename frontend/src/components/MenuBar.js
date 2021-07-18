@@ -1,7 +1,11 @@
 import React, { useState, useContext } from 'react';
+import { useMutation } from '@apollo/client';
 import { AuthContext } from '../context/authContext';
-import { Menu } from 'semantic-ui-react';
+import { Loader, Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+
+// GQL mutation
+import { LOGOUT_USER } from '../graphql/auth';
 
 const MenuBar = () => {
   const { user, contextLogout } = useContext(AuthContext);
@@ -9,11 +13,25 @@ const MenuBar = () => {
 
   const handleItemClick = (e, { name }) => setActiveItem(name);
 
+  const [logoutUser, { data, client }] = useMutation(LOGOUT_USER, {
+    update(_, res) {
+      console.log('update');
+      contextLogout();
+      client.clearStore();
+    },
+    onError(error) {
+      console.log(error);
+    },
+  });
+
+  console.log('useMutation data');
+  console.log(data);
+
   return user ? (
     <Menu pointing secondary size='massive' color='teal'>
       <Menu.Item name={user.username} active as={Link} to='/' />
       <Menu.Menu position='right'>
-        <Menu.Item name='logout' onClick={contextLogout} as={Link} to='/' />
+        <Menu.Item name='logout' onClick={logoutUser} as={Link} to='/' />
       </Menu.Menu>
     </Menu>
   ) : (

@@ -87,6 +87,7 @@ function AuthProvider(props) {
   };
 
   const contextLogout = () => {
+    setAccessTokenInMemory('');
     dispatch({ type: LOGOUT_USER });
   };
 

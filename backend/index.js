@@ -62,32 +62,40 @@ async function startApolloServer() {
     }
 
     // refToken is VALID at this point
-
     console.log(payload.id); // payload === decodedToken = mongodb userId
     // refresh token is valid, we can send back an access token
 
-    // Find the user using the userId from the decoded RefToken
-    const user = await User.findOne({ _id: payload.id });
+    try {
+      // Find the user using the userId from the decoded RefToken
+      const user = await User.findOne({ _id: payload.id });
 
-    if (!user) {
-      return res.send({ accessToken: '', user: 'user is not found inside DB' });
+      if (!user) {
+        return res.send({ accessToken: '', user: 'user is not found inside DB' });
+      }
+
+      // send a new refCookie, with a new refresh token, storing again, the userId
+      // res.cookie('refCookie', generateRefreshToken(user._id), {
+      //   httpOnly: true,
+      //   path: '/refresh_token',
+      //   sameSite: true,
+      //   expires: new Date(Date.now() + 1 * 3600000), // 1 hour
+      // });
+
+      sendRefCookie(res, user._id); // also signs and stores refToken
+
+      console.log(user); // the user from the DB
+
+      // Send back an accessToken, again with the user stored
+      // We zouden ook de user al terug kunnen sturen hier ipv decoden client side
+      return res.send({ accessToken: generateAccessToken(user) });
+    } catch (error) {
+      console.log(error);
+      return res.send({
+        accessToken: '',
+        error,
+        message: 'try catch block',
+      });
     }
-
-    // send a new refCookie, with a new refresh token, storing again, the userId
-    // res.cookie('refCookie', generateRefreshToken(user._id), {
-    //   httpOnly: true,
-    //   path: '/refresh_token',
-    //   sameSite: true,
-    //   expires: new Date(Date.now() + 1 * 3600000), // 1 hour
-    // });
-
-    sendRefCookie(res, user._id); // also signs and stores refToken
-
-    console.log(user); // the user from the DB
-
-    // Send back an accessToken, again with the user stored
-    // We zouden ook de user al terug kunnen sturen hier ipv decoden client side
-    return res.send({ accessToken: generateAccessToken(user) });
   });
 
   // Mount Apollo middleware here.
