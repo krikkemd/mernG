@@ -70,7 +70,7 @@ async function startApolloServer() {
     const user = await User.findOne({ _id: payload.id });
 
     if (!user) {
-      return res.send({ accessToken: '', user: 'nope' });
+      return res.send({ accessToken: '', user: 'user is not found inside DB' });
     }
 
     // send a new refCookie, with a new refresh token, storing again, the userId

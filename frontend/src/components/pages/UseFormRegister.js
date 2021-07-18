@@ -1,8 +1,15 @@
 import { useMutation } from '@apollo/client';
 import { useForm } from '../../util/hooks';
 import { REGISTER_USER } from '../../graphql/auth';
+import { setAccessTokenInMemory } from '../../util/accessToken';
+
+// context
+import { useContext } from 'react';
+import { AuthContext } from '../../context/authContext';
 
 const Register = ({ history }) => {
+  const { contextLogin, refreshToken } = useContext(AuthContext);
+
   const initialState = {
     username: '',
     email: '',
@@ -22,10 +29,27 @@ const Register = ({ history }) => {
 
   const [registerUser, { loading }] = useMutation(REGISTER_USER, {
     update(_, res) {
+      console.log('update in registerUser:');
       console.log(res);
+
+      const {
+        data: { register: user },
+      } = res;
+      console.log(user);
+
       setErrors({});
       setValues(initialState);
-      history.push('/login');
+
+      // contextLogin(user);
+
+      // setAccessTokenInMemory()
+      history.push('/');
+    },
+    onCompleted(data) {
+      console.log('onCompleted:');
+      console.log(data);
+
+      refreshToken(true);
     },
     onError(err) {
       console.log(err.graphQLErrors[0].extensions.errors);

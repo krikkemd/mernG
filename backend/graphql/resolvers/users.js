@@ -69,7 +69,7 @@ module.exports = {
       };
     },
 
-    async register(parent, args) {
+    async register(parent, args, { res }) {
       console.log('running register mutation in user resolver');
 
       // destructure incoming data from the args
@@ -107,13 +107,20 @@ module.exports = {
         createdAt: new Date().toISOString(),
       });
 
-      const res = await newUser.save();
+      const result = await newUser.save();
 
-      // const token = generateToken(res);
+      // const token = generateToken(result);
+
+      // store a jwt inside a cookie
+      res.cookie('refCookie', generateRefreshToken(result._id), {
+        httpOnly: true,
+        sameSite: true,
+        expires: new Date(Date.now() + 1 * 3600000), // 1 hour
+      });
 
       return {
-        ...res._doc,
-        id: res._id,
+        ...result._doc,
+        id: result._id,
         // token,
       };
     },

@@ -1,6 +1,3 @@
 // AUTH TYPES
 export const LOGIN_USER = 'LOGIN_USER';
 export const LOGOUT_USER = 'LOGOUT_USER';
-
-// UI TYPES
-export const LOADING_FALSE = 'LOADING_FALSE';

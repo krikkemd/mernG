@@ -1,5 +1,5 @@
 import { createContext, useReducer, useEffect, useState } from 'react';
-import { LOADING_FALSE, LOGIN_USER, LOGOUT_USER } from './types';
+import { LOGIN_USER, LOGOUT_USER } from './types';
 import { setAccessTokenInMemory } from '../util/accessToken';
 import { Loader } from 'semantic-ui-react';
 import jwtDecode from 'jwt-decode';
