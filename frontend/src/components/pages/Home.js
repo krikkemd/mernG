@@ -7,6 +7,9 @@ import { AuthContext } from '../../context/authContext';
 // GQL Queries
 import { BYE, GET_POSTS } from '../../graphql/posts';
 
+// Components
+import CreatePostForm from '../CreatePostForm';
+
 // CSS Components
 import { Button, Grid, Loader } from 'semantic-ui-react';
 import PostCard from '../PostCard';
@@ -54,6 +57,9 @@ const Home = () => {
             <h1>Recent Posts</h1>
           </Grid.Row>
           <Grid.Row>
+            <Grid.Column>
+              <CreatePostForm />
+            </Grid.Column>
             {posts &&
               posts.map(post => (
                 <Grid.Column key={post.id} style={{ marginBottom: '2rem' }}>

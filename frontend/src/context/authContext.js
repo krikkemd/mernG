@@ -65,7 +65,7 @@ function AuthProvider(props) {
         setTimeout(() => {
           console.log('timer running');
           refreshToken();
-        }, 119000); // 1m 19s
+        }, 115000); // 1m
 
         // add the userdata to the context from the decoded accessToken
         contextLogin(user);
