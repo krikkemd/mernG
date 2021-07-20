@@ -1,14 +1,13 @@
 import { useMutation } from '@apollo/client';
 import { useForm } from '../../util/hooks';
 import { REGISTER_USER } from '../../graphql/auth';
-import { setAccessTokenInMemory } from '../../util/accessToken';
 
 // context
 import { useContext } from 'react';
 import { AuthContext } from '../../context/authContext';
 
 const Register = ({ history }) => {
-  const { contextLogin, refreshToken } = useContext(AuthContext);
+  const { refreshToken } = useContext(AuthContext);
 
   const initialState = {
     username: '',

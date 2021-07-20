@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useMutation } from '@apollo/client';
 import { AuthContext } from '../context/authContext';
-import { Loader, Menu } from 'semantic-ui-react';
+import { Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 // GQL mutation

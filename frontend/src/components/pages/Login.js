@@ -6,12 +6,9 @@ import { useForm } from '../../util/hooks';
 // GQL Mutations
 import { LOGIN_USER } from '../../graphql/auth.js';
 
-// GQL Queries
-import { setAccessTokenInMemory } from '../../util/accessToken';
-
 const Login = ({ history }) => {
   // Authcontext
-  const { contextLogin, refreshToken } = useContext(AuthContext);
+  const { refreshToken } = useContext(AuthContext);
 
   // The fields we use in this form
   const initialState = {
@@ -31,7 +28,7 @@ const Login = ({ history }) => {
   // Mutation (login user function) it is actually a post request
   const [loginUser, { loading }] = useMutation(LOGIN_USER, {
     onCompleted(data) {
-      const { login: user } = data;
+      // const { login: user } = data;
       console.log(data);
       // hier krijgen we de accessToken terug!
       // We moeten de acccesstoken storen in memory, zodat hij defined is in de headers voor het volgende netwerkrequest

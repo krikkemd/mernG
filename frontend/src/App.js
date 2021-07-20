@@ -11,6 +11,7 @@ import UseFormRegister from './components/pages/UseFormRegister';
 
 // Components
 import MenuBar from './components/MenuBar';
+import AuthRoute from './components/AuthRoute';
 
 // CSS Components
 import { Container } from 'semantic-ui-react';
@@ -27,8 +28,8 @@ function App() {
           {/* Menubar on every page */}
           <MenuBar />
           <Route exact path='/' render={props => <Home {...props} />} />
-          <Route exact path='/login' component={Login} />
-          <Route exact path='/register' component={UseFormRegister} />
+          <AuthRoute extra={'pass props here'} exact path='/login' component={Login} />
+          <AuthRoute exact path='/register' component={UseFormRegister} />
         </Container>
       </Router>
     </AuthProvider>
