@@ -17,6 +17,10 @@ const userSchema = new Schema({
     type: String,
     select: false,
   },
+  refTokenVersion: {
+    type: Number,
+    default: 0,
+  },
   createdAt: String,
 });
 

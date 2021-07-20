@@ -20,7 +20,7 @@ const Home = () => {
   const [myQueryExecutor, { loading, data }] = useLazyQuery(GET_POSTS);
 
   useEffect(() => {
-    myQueryExecutor();
+    myQueryExecutor(); // we use useLazyQuery in a useEffect so we dont get react unmounted component errors
   }, [myQueryExecutor]);
 
   let posts;
