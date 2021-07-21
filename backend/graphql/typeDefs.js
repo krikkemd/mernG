@@ -43,7 +43,7 @@ module.exports = gql`
 
   type Query {
     bye: String!
-    getPosts: [Post]
+    getPosts(limit: Int): [Post]
     getPost(postId: ID!): Post
   }
 

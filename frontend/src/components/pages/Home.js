@@ -20,7 +20,12 @@ const Home = () => {
   const { user } = useContext(AuthContext);
   console.log(`user: ${user}`);
 
-  const [myQueryExecutor, { loading, data }] = useLazyQuery(GET_POSTS);
+  const [myQueryExecutor, { loading, data }] = useLazyQuery(GET_POSTS, {
+    pollInterval: 30000,
+    variables: {
+      limit: 10,
+    },
+  });
 
   useEffect(() => {
     myQueryExecutor(); // we use useLazyQuery in a useEffect so we dont get react unmounted component errors
