@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_POSTS = gql`
-  query getPosts($limit: Int!) {
-    getPosts(limit: $limit) {
+  query getPosts($limit: Int, $skip: Int) {
+    getPosts(limit: $limit, skip: $skip) {
       id
       username
       body

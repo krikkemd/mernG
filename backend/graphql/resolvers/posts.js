@@ -4,11 +4,11 @@ const checkAuth = require('../../util/check-auth');
 
 module.exports = {
   Query: {
-    async getPosts(_, { limit }, context) {
+    async getPosts(_, { limit, skip }, context) {
       console.log('getPosts');
       checkAuth(context);
       try {
-        const posts = Post.find().sort({ createdAt: -1 }).limit(limit);
+        const posts = Post.find().sort({ createdAt: -1 }).limit(limit).skip(skip);
         return posts;
       } catch (error) {
         throw new Error(error);
