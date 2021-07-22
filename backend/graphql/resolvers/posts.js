@@ -6,7 +6,7 @@ module.exports = {
   Query: {
     async getPosts(_, { limit, skip }, context) {
       console.log('getPosts');
-      checkAuth(context);
+      // checkAuth(context);
       try {
         const posts = Post.find().sort({ createdAt: -1 }).limit(limit).skip(skip);
         return posts;
@@ -99,19 +99,19 @@ module.exports = {
 
         // 4) if the current logged in user's username is found inside the post.likes array > the post is already liked
         if (post.likes.find(like => like.username === username)) {
-          //  5a) post already liked? > unlike the post
+          //  4a) post already liked? > unlike the post
           // The filter() method creates a new array with all elements that pass the test implemented by the provided function.
           // so all the usernames that are not the current logged in user's username are returned inside the post.likes array
           post.likes = post.likes.filter(like => like.username !== username);
         } else {
-          //  5b) post not liked? > like the post
+          //  4b) post not liked? > like the post
           post.likes.push({
             username,
             createdAt: new Date().toISOString(),
           });
         }
 
-        // 6) save and return the post
+        // 5) save and return the post
         await post.save();
         return post;
       } else {

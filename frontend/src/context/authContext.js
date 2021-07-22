@@ -65,7 +65,7 @@ function AuthProvider(props) {
         setTimeout(() => {
           console.log('timer running');
           refreshToken();
-        }, 115000); // 1m
+        }, 59000); // accessToken expires in 1 min
 
         // add the userdata to the context from the decoded accessToken
         contextLogin(user);

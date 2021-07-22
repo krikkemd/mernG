@@ -7,6 +7,7 @@ const postSchema = new Schema({
   comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }], // array
   likes: [
     {
+      // id: Schema.Types.ObjectId,
       username: String,
       createdAt: String,
     },

@@ -23,6 +23,7 @@ const CreatePostForm = () => {
     initialState,
     'Create Post',
     'teal',
+    false,
   );
 
   const [createPost, { loading, client }] = useMutation(CREATE_POST, {

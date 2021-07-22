@@ -24,6 +24,8 @@ const Register = ({ history }) => {
     register,
     initialState,
     'Register',
+    'primary',
+    true,
   );
 
   const [registerUser, { loading }] = useMutation(REGISTER_USER, {

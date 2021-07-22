@@ -34,6 +34,17 @@ const client = new ApolloClient({
   link: concat(authLink, httpLink),
   cache: new InMemoryCache({
     // addTypename: false,
+    // typePolicies: {
+    //   Post: {
+    //     fields: {
+    //       likes: {
+    //         merge(existing = [], incoming = []) {
+    //           // return [...existing, ...incoming];
+    //         },
+    //       },
+    //     },
+    //   },
+    // },
   }),
 });
 

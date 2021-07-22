@@ -23,7 +23,13 @@ const Login = ({ history }) => {
 
   // form is a custom hook, see Register.js for original
   // const {FormComponent, values, ...} are returned from the useForm, based on what we pass in: useForm(callback, initialState, err..)
-  const { FormComponent, values, setValues, setErrors } = useForm(login, initialState, 'Login');
+  const { FormComponent, values, setValues, setErrors } = useForm(
+    login,
+    initialState,
+    'Login',
+    'primary',
+    true,
+  );
 
   // Mutation (login user function) it is actually a post request
   const [loginUser, { loading }] = useMutation(LOGIN_USER, {

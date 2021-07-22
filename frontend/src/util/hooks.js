@@ -20,7 +20,7 @@ import { Button, Form } from 'semantic-ui-react';
 4) semantic ui 'loading' is passed into the FormComponent(loading) <- itself, because it cannot be accessed earlier 
   this is for the form to show a loading animation on submit
 */
-export const useForm = (callback, initialState = {}, title, buttonColor) => {
+export const useForm = (callback, initialState = {}, title, buttonColor, showLable) => {
   const [values, setValues] = useState(initialState);
   const [errors, setErrors] = useState({});
 
@@ -31,18 +31,19 @@ export const useForm = (callback, initialState = {}, title, buttonColor) => {
   const onSubmit = e => {
     e.preventDefault();
     callback();
+    setErrors({});
     console.log(errors);
   };
 
   const FormComponent = loading => (
     <div className='form__container'>
-      <Form loading={loading} onSubmit={onSubmit} noValidate>
+      <Form loading={loading} onSubmit={onSubmit} noValidate autocomplete='off'>
         <h1 className='heading-1'>{title}</h1>
 
         {Object.keys(values).map(field => (
           <Form.Input
             key={field}
-            label={field}
+            label={showLable && field}
             placeholder={field}
             value={values[field]}
             name={field}
