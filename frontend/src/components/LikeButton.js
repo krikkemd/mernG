@@ -7,6 +7,7 @@ import { AuthContext } from '../context/authContext';
 // GQL
 import { LIKE_POST } from '../graphql/posts';
 
+// takes in the post.id, post.likeCount, post.likes <- in that order
 const LikeButton = ({ post }) => {
   // Context
   const [liked, setLiked] = useState(false);
