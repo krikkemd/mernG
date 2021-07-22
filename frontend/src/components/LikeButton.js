@@ -23,7 +23,7 @@ const LikeButton = ({ post }) => {
   //   Change button fill (same code as above)
   useEffect(() => {
     console.log(post.likes);
-    const found = post.likes.find(like => like.username === user.username);
+    const found = user && post.likes.find(like => like.username === user.username);
     console.log(found);
 
     user && found ? setLiked(true) : setLiked(false);
@@ -57,16 +57,14 @@ const LikeButton = ({ post }) => {
       />
     )
   ) : (
-    //   Not Logged in
+    // Not Logged in
     <Button
-      // onClick={likePost}
       as={Link}
       to='/login'
       color='teal'
       basic={true}
-      // content='Like'
       icon='heart'
-      //   label={{ basic: true, color: 'teal', pointing: 'left', content: likeCount }}
+      label={{ basic: true, color: 'teal', pointing: 'left', content: post.likeCount }}
     />
   );
 
