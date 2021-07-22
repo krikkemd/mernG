@@ -37,7 +37,7 @@ export const useForm = (callback, initialState = {}, title, buttonColor, showLab
 
   const FormComponent = loading => (
     <div className='form__container'>
-      <Form loading={loading} onSubmit={onSubmit} noValidate autocomplete='off'>
+      <Form loading={loading} onSubmit={onSubmit} noValidate autoComplete='off'>
         <h1 className='heading-1'>{title}</h1>
 
         {Object.keys(values).map(field => (

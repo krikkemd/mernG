@@ -8,6 +8,7 @@ import { AuthContext } from '../context/authContext';
 
 // Components
 import LikeButton from './LikeButton';
+import DeleteButton from './DeleteButton';
 
 const PostCard = ({ post: { id, username, body, createdAt, likeCount, likes, commentCount } }) => {
   const { user } = useContext(AuthContext);
@@ -45,18 +46,7 @@ const PostCard = ({ post: { id, username, body, createdAt, likeCount, likes, com
         />
 
         {/* Delete */}
-        {user && user.username === username && (
-          <Button
-            onClick={deletePost}
-            as={'div'}
-            to={`/posts/${id}`}
-            color='red'
-            basic={true}
-            floated='right'
-            icon='trash'
-            // label={{ basic: true, color: 'red', pointing: 'left', content: commentCount }}
-          />
-        )}
+        <DeleteButton post={{ id, username }} />
       </Card.Content>
     </Card>
   );

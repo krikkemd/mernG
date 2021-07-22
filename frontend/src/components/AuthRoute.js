@@ -4,7 +4,7 @@ import { Redirect, Route } from 'react-router-dom';
 // AuthContext
 import { AuthContext } from '../context/authContext';
 
-// For route that logged in users dont need to access: Login, Register
+// For routes that logged in users dont need to access: Login, Register
 const AuthRoute = ({ component: Component, ...rest }) => {
   const { user } = useContext(AuthContext);
   // console.log(Component);

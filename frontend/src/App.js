@@ -8,6 +8,7 @@ import { AuthProvider } from './context/authContext';
 import Home from './components/pages/Home';
 import Login from './components/pages/Login';
 import UseFormRegister from './components/pages/UseFormRegister';
+import SinglePost from './components/pages/SinglePost';
 
 // Components
 import MenuBar from './components/MenuBar';
@@ -30,6 +31,7 @@ function App() {
           <Route exact path='/' render={props => <Home {...props} />} />
           <AuthRoute extra={'pass props here'} exact path='/login' component={Login} />
           <AuthRoute exact path='/register' component={UseFormRegister} />
+          <Route exact path='/posts/:postId' component={SinglePost} />
         </Container>
       </Router>
     </AuthProvider>

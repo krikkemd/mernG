@@ -15,3 +15,10 @@
   padding-top: 0rem;
   padding-bottom: 0rem;
 }
+
+.ui.teal.button:focus,
+.ui.teal.buttons .button:focus {
+  background-color: #00b5ad;
+  color: #fff;
+  text-shadow: none;
+}
