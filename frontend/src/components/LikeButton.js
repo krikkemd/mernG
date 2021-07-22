@@ -22,15 +22,13 @@ const LikeButton = ({ post }) => {
 
   //   Change button fill (same code as above)
   useEffect(() => {
-    console.log(post.likes);
     const found = user && post.likes.find(like => like.username === user.username);
-    console.log(found);
 
     user && found ? setLiked(true) : setLiked(false);
   }, [post.likes, user]);
 
   // GQL
-  const [likePost, {}] = useMutation(LIKE_POST, {
+  const [likePost] = useMutation(LIKE_POST, {
     variables: {
       postId: post.id,
     },

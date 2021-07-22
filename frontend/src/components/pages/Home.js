@@ -5,13 +5,13 @@ import { useLazyQuery } from '@apollo/client';
 import { AuthContext } from '../../context/authContext';
 
 // GQL Queries
-import { BYE, GET_POSTS } from '../../graphql/posts';
+import { GET_POSTS } from '../../graphql/posts';
 
 // Components
 import CreatePostForm from '../CreatePostForm';
 
 // CSS Components
-import { Button, Grid, Loader, Transition } from 'semantic-ui-react';
+import { Grid, Loader, Transition } from 'semantic-ui-react';
 import PostCard from '../PostCard';
 
 const Home = () => {
@@ -38,16 +38,6 @@ const Home = () => {
     console.log(data);
     posts = data.getPosts;
   }
-
-  const [getBye, byeData] = useLazyQuery(BYE, {
-    fetchPolicy: 'network-only',
-  }); // cached!
-
-  if (byeData.data) {
-    console.log(byeData.data);
-  }
-
-  if (byeData.error) return `${byeData.error}`;
 
   return (
     <div>
