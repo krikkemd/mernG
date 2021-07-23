@@ -8,7 +8,7 @@ import { AuthContext } from '../context/authContext';
 import { ErrorContext } from '../context/errorContext';
 
 // GQL
-import { GET_POSTS, LIKE_POST } from '../graphql/posts';
+import { LIKE_POST } from '../graphql/posts';
 
 // takes in the post.id, post.likeCount, post.likes <- in that order
 const LikeButton = ({ post }) => {
@@ -48,8 +48,13 @@ const LikeButton = ({ post }) => {
       clearErrors(); // is on a 3s timeout -> clears the errors
 
       // If you just want the store to be cleared and don't want to refetch active queries, use client.clearStore()
-      // getPosts will run when pushed back to the homepage
+      // getPosts query will run when pushed back to the homepage
       client.clearStore();
+
+      // getPosts query will run when on the homescreen when error
+      if (history.location.pathname === '/') {
+        client.resetStore();
+      }
 
       // When on the SinglePostPage, redirect to the homepage when the post is deleted
       if (history.location.pathname === `/posts/${postId}`) {

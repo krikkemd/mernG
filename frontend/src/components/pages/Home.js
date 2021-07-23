@@ -13,11 +13,13 @@ import CreatePostForm from '../CreatePostForm';
 // CSS Components
 import { Grid, Loader, Transition } from 'semantic-ui-react';
 import PostCard from '../PostCard';
+import { ErrorContext } from '../../context/errorContext';
 
 const Home = () => {
   // here we run the useQuery() Hook, and we pass it the grapql Query
   // we destructure loading, and data from the useQuery(GET_POSTS)
   const { user } = useContext(AuthContext);
+  const { errors } = useContext(ErrorContext);
 
   const [myQueryExecutor, { loading, data }] = useLazyQuery(GET_POSTS, {
     pollInterval: 30000,
@@ -59,6 +61,18 @@ const Home = () => {
                   Recent posts
                 </h1>
               </Grid.Column>
+              {/* Errors */}
+              {errors && Object.keys(errors).length > 0 && (
+                <Grid.Column width={16}>
+                  <div className='ui negative message'>
+                    <ul>
+                      {Object.values(errors).map(error => (
+                        <li key={error}>{error}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </Grid.Column>
+              )}
               {posts.map(post => (
                 <Grid.Column key={post.id} style={{ marginBottom: '2rem' }}>
                   <PostCard post={post} />

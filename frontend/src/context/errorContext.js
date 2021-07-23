@@ -35,7 +35,7 @@ function ErrorProvider(props) {
   const clearErrors = () =>
     setTimeout(() => {
       dispatch({ type: CLEAR_ERRORS });
-    }, 2000);
+    }, 2500);
 
   return (
     <ErrorContext.Provider value={{ errors: state.errors, setErrors, clearErrors }} {...props} />
