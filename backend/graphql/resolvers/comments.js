@@ -2,6 +2,7 @@ const Post = require('../../models/Post');
 const Comment = require('../../models/Comment');
 const { UserInputError, AuthenticationError } = require('apollo-server-express');
 const checkAuth = require('../../util/check-auth');
+const { removeWhiteSpace } = require('../../util/helperFunctions');
 
 module.exports = {
   Mutation: {
@@ -18,6 +19,16 @@ module.exports = {
         });
       }
 
+      console.log(removeWhiteSpace(body));
+      console.log(removeWhiteSpace(body).length);
+
+      // if (removeWhiteSpace(body).length > 27) {
+      //   throw new UserInputError('Too many characters in a row', {
+      //     errors: {
+      //       body: 'Too many characters in a row',
+      //     },
+      //   });
+      // }
       // 2) try to find the post that the user is commenting on
       const post = await Post.findById(postId);
 
