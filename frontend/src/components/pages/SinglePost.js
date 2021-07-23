@@ -4,8 +4,10 @@ import { AuthContext } from '../../context/authContext';
 import { GET_SINGLE_POST } from '../../graphql/posts';
 
 // Semantic UI
-import { Card, Grid, Image, Loader } from 'semantic-ui-react';
+import { Button, Card, Grid, Image, Loader } from 'semantic-ui-react';
 import LikeButton from '../LikeButton';
+import DeleteButton from '../DeleteButton';
+import CommentButton from '../CommentButton';
 
 const SinglePost = props => {
   console.log(props);
@@ -20,13 +22,15 @@ const SinglePost = props => {
     },
   });
 
+  // console.log(NetworkStatus);
+
   useEffect(() => {
     myQueryExecutor();
   }, [myQueryExecutor]);
 
-  if (called && loading) return <p>Loading ...</p>;
-  if (!called) {
-    return <button onClick={() => myQueryExecutor()}>Load greeting</button>;
+  if (!called || loading) {
+    console.log('NOT CALLED OR LOADING!');
+    return <Loader active />;
   }
 
   if (data) {
@@ -34,9 +38,7 @@ const SinglePost = props => {
     post = data.getPost;
   }
 
-  return loading ? (
-    <div>LOADING</div>
-  ) : (
+  return (
     <Grid>
       <Grid.Row>
         <Grid.Column width={2}>
@@ -51,7 +53,10 @@ const SinglePost = props => {
             <Card.Content>
               <Card.Header>{post.username}</Card.Header>
               <Card.Description>{post.body}</Card.Description>
-              <Card extra>
+              <hr />
+
+              <Card.Content extra>
+                {/* Like */}
                 <LikeButton
                   post={{
                     id: post.id,
@@ -59,7 +64,13 @@ const SinglePost = props => {
                     likes: post.likes,
                   }}
                 />
-              </Card>
+
+                {/* Comment */}
+                <CommentButton post={{ id: post.id, commentCount: post.commentCount }} />
+
+                {/* Delete */}
+                <DeleteButton post={{ id: post.id, username: post.username }} />
+              </Card.Content>
             </Card.Content>
           </Card>
         </Grid.Column>

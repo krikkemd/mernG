@@ -1,10 +1,11 @@
-import React, { useContext } from 'react';
-import { Button } from 'semantic-ui-react';
+import React, { useContext, useState } from 'react';
+import { Button, Confirm } from 'semantic-ui-react';
 import { AuthContext } from '../context/authContext';
 import { useMutation } from '@apollo/client';
 import { DELETE_POST, GET_POSTS } from '../graphql/posts';
 
 const DeleteButton = ({ post }) => {
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const { user } = useContext(AuthContext);
 
   const [deletePost, { client }] = useMutation(DELETE_POST, {
@@ -21,6 +22,10 @@ const DeleteButton = ({ post }) => {
       });
     },
 
+    onCompleted() {
+      setConfirmOpen(false);
+    },
+
     onError(err) {
       console.log(err);
     },
@@ -33,14 +38,19 @@ const DeleteButton = ({ post }) => {
   return (
     user &&
     user.username === post.username && (
-      <Button
-        as='div'
-        onClick={() => deletePost()}
-        icon='trash'
-        color='red'
-        basic={true}
-        floated='right'
-      />
+      <>
+        <Button
+          as='div'
+          onClick={() => setConfirmOpen(true)}
+          icon='trash'
+          color='red'
+          basic={true}
+          floated='right'
+        />
+
+        {/* Confirm modal */}
+        <Confirm open={confirmOpen} onCancel={() => setConfirmOpen(false)} onConfirm={deletePost} />
+      </>
     )
   );
 };
