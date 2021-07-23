@@ -133,7 +133,9 @@ const SinglePost = props => {
               <Card.Meta>{moment(post.createdAt).fromNow()}</Card.Meta>
 
               {/* Post Body */}
-              <Card.Description>{post.body}</Card.Description>
+              <Card.Description style={{ overflowWrap: 'break-word' }}>
+                {post.body}
+              </Card.Description>
             </Card.Content>
 
             <hr />
@@ -204,7 +206,9 @@ const SinglePost = props => {
               <Card.Content>
                 <Card.Header>{comment.username}</Card.Header>
                 <Card.Meta>{moment(comment.createdAt).fromNow()}</Card.Meta>
-                <Card.Description>{comment.body}</Card.Description>
+                <Card.Description style={{ overflowWrap: 'break-word' }}>
+                  {comment.body}
+                </Card.Description>
                 {user && user.username === comment.username && (
                   <DeleteButton
                     post={{ id: post.id }}
