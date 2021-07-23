@@ -10,16 +10,21 @@ import { CREATE_COMMENT } from '../../graphql/comments';
 import { AuthContext } from '../../context/authContext';
 import { ErrorContext } from '../../context/errorContext';
 
-// Semantic UI
-import { Card, Form, Grid, Image, Loader, Transition } from 'semantic-ui-react';
+// Components
+import ReadMore from '../ReadMore';
 import LikeButton from '../LikeButton';
 import DeleteButton from '../DeleteButton';
 import CommentButton from '../CommentButton';
 
+// Semantic UI
+import { Card, Form, Grid, Image, Loader, Transition } from 'semantic-ui-react';
+
 const SinglePost = props => {
+  // Context
   const { user } = useContext(AuthContext);
   const { errors, setErrors, clearErrors } = useContext(ErrorContext);
 
+  // Local State
   const [comment, setComment] = useState('');
   const commentInputRef = useRef(null);
 
@@ -133,9 +138,7 @@ const SinglePost = props => {
               <Card.Meta>{moment(post.createdAt).fromNow()}</Card.Meta>
 
               {/* Post Body */}
-              <Card.Description style={{ overflowWrap: 'break-word' }}>
-                {post.body}
-              </Card.Description>
+              <ReadMore component={Card.Description}>{post.body}</ReadMore>
             </Card.Content>
 
             <hr />
@@ -176,6 +179,9 @@ const SinglePost = props => {
           {/* Comment Input */}
           {user && (
             <Card fluid>
+              <Card.Header as='h3' textAlign='center' style={{ padding: 20 }}>
+                Leave a Comment
+              </Card.Header>
               <Card.Content>
                 <Form autoComplete='off'>
                   <div className='ui action input fluid'>
@@ -206,9 +212,7 @@ const SinglePost = props => {
               <Card.Content>
                 <Card.Header>{comment.username}</Card.Header>
                 <Card.Meta>{moment(comment.createdAt).fromNow()}</Card.Meta>
-                <Card.Description style={{ overflowWrap: 'break-word' }}>
-                  {comment.body}
-                </Card.Description>
+                <ReadMore component={Card.Description}>{comment.body}</ReadMore>
                 {user && user.username === comment.username && (
                   <DeleteButton
                     post={{ id: post.id }}
