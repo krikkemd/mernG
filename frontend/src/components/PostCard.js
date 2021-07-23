@@ -19,6 +19,8 @@ const PostCard = ({ post: { id, username, body, createdAt, likeCount, likes, com
           src='https://react.semantic-ui.com/images/avatar/large/molly.png'
         />
         <Card.Header>{username}</Card.Header>
+
+        {/* Link to SinglePost */}
         <Card.Meta as={Link} to={`/posts/${id}`}>
           {moment(createdAt).fromNow()}
         </Card.Meta>

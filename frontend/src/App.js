@@ -20,20 +20,23 @@ import { Container } from 'semantic-ui-react';
 // CSS
 import 'semantic-ui-css/semantic.min.css';
 import './App.css';
+import { ErrorProvider } from './context/errorContext';
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Container>
-          {/* Menubar on every page */}
-          <MenuBar />
-          <Route exact path='/' render={props => <Home {...props} />} />
-          <AuthRoute extra={'pass props here'} exact path='/login' component={Login} />
-          <AuthRoute exact path='/register' component={UseFormRegister} />
-          <Route exact path='/posts/:postId' component={SinglePost} />
-        </Container>
-      </Router>
+      <ErrorProvider>
+        <Router>
+          <Container>
+            {/* Menubar on every page */}
+            <MenuBar />
+            <Route exact path='/' render={props => <Home {...props} />} />
+            <AuthRoute extra={'pass props here'} exact path='/login' component={Login} />
+            <AuthRoute exact path='/register' component={UseFormRegister} />
+            <Route exact path='/posts/:postId' component={SinglePost} />
+          </Container>
+        </Router>
+      </ErrorProvider>
     </AuthProvider>
   );
 }

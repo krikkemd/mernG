@@ -48,6 +48,7 @@ const Home = () => {
       user || !user ? (
         <Grid columns={3} stackable divided='vertically'>
           <Grid.Row centered style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+            {/* Create Post Form */}
             <CreatePostForm />
           </Grid.Row>
 

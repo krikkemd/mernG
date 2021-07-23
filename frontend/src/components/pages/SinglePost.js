@@ -1,24 +1,31 @@
 import React, { useEffect, useContext } from 'react';
+import moment from 'moment';
+
+// GQL
 import { useLazyQuery } from '@apollo/client';
-import { AuthContext } from '../../context/authContext';
 import { GET_SINGLE_POST } from '../../graphql/posts';
 
+// Context
+import { ErrorContext } from '../../context/errorContext';
+
 // Semantic UI
-import { Button, Card, Grid, Image, Loader } from 'semantic-ui-react';
+import { Card, Grid, Image, Loader, Transition } from 'semantic-ui-react';
 import LikeButton from '../LikeButton';
 import DeleteButton from '../DeleteButton';
 import CommentButton from '../CommentButton';
 
 const SinglePost = props => {
-  console.log(props);
+  const { errors } = useContext(ErrorContext);
   const postId = props.match.params.postId;
 
-  const { user } = useContext(AuthContext);
   let post;
 
   const [myQueryExecutor, { called, loading, data }] = useLazyQuery(GET_SINGLE_POST, {
     variables: {
       postId,
+    },
+    onError(err) {
+      console.log(err);
     },
   });
 
@@ -42,6 +49,7 @@ const SinglePost = props => {
     <Grid>
       <Grid.Row>
         <Grid.Column width={2}>
+          {/* Post User Image */}
           <Image
             size='small'
             floated='right'
@@ -51,28 +59,46 @@ const SinglePost = props => {
         <Grid.Column width={10}>
           <Card fluid>
             <Card.Content>
+              {/* Post Username */}
               <Card.Header>{post.username}</Card.Header>
+              <Card.Meta>{moment(post.createdAt).fromNow()}</Card.Meta>
+
+              {/* Post Body */}
               <Card.Description>{post.body}</Card.Description>
-              <hr />
+            </Card.Content>
 
-              <Card.Content extra>
-                {/* Like */}
-                <LikeButton
-                  post={{
-                    id: post.id,
-                    likeCount: post.likeCount,
-                    likes: post.likes,
-                  }}
-                />
+            <hr />
 
-                {/* Comment */}
-                <CommentButton post={{ id: post.id, commentCount: post.commentCount }} />
+            <Card.Content extra>
+              {/* Like */}
+              <LikeButton
+                post={{
+                  id: post.id,
+                  likeCount: post.likeCount,
+                  likes: post.likes,
+                }}
+              />
 
-                {/* Delete */}
-                <DeleteButton post={{ id: post.id, username: post.username }} />
-              </Card.Content>
+              {/* Comment */}
+              <CommentButton post={{ id: post.id, commentCount: post.commentCount }} />
+
+              {/* Delete - the user from context is defined in the button itself */}
+              <DeleteButton props={props} post={{ id: post.id, username: post.username }} />
             </Card.Content>
           </Card>
+
+          {/* Errors */}
+          <Transition.Group animation='scale'>
+            {errors && Object.keys(errors).length > 0 && (
+              <div className='ui negative message'>
+                <ul>
+                  {Object.values(errors).map(error => (
+                    <li>{error}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </Transition.Group>
         </Grid.Column>
       </Grid.Row>
     </Grid>
