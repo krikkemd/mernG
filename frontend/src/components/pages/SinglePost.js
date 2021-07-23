@@ -6,6 +6,7 @@ import { useLazyQuery } from '@apollo/client';
 import { GET_SINGLE_POST } from '../../graphql/posts';
 
 // Context
+import { AuthContext } from '../../context/authContext';
 import { ErrorContext } from '../../context/errorContext';
 
 // Semantic UI
@@ -15,6 +16,7 @@ import DeleteButton from '../DeleteButton';
 import CommentButton from '../CommentButton';
 
 const SinglePost = props => {
+  const { user } = useContext(AuthContext);
   const { errors } = useContext(ErrorContext);
   const postId = props.match.params.postId;
 
@@ -82,8 +84,10 @@ const SinglePost = props => {
               {/* Comment */}
               <CommentButton post={{ id: post.id, commentCount: post.commentCount }} />
 
-              {/* Delete - the user from context is defined in the button itself */}
-              <DeleteButton props={props} post={{ id: post.id, username: post.username }} />
+              {/* Delete */}
+              {user && user.username === post.username && (
+                <DeleteButton post={{ id: post.id, username: post.username }} />
+              )}
             </Card.Content>
           </Card>
 
@@ -100,12 +104,19 @@ const SinglePost = props => {
             )}
           </Transition.Group>
 
+          {/* Comments */}
           {post.comments.map(comment => (
             <Card fluid key={comment.id}>
               <Card.Content>
                 <Card.Header>{comment.username}</Card.Header>
                 <Card.Meta>{moment(comment.createdAt).fromNow()}</Card.Meta>
                 <Card.Description>{comment.body}</Card.Description>
+                {user && user.username === comment.username && (
+                  <DeleteButton
+                    post={{ id: post.id }}
+                    comment={{ id: comment.id, username: comment.username }}
+                  />
+                )}
               </Card.Content>
             </Card>
           ))}

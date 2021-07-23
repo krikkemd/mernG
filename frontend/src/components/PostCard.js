@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Image } from 'semantic-ui-react';
 import moment from 'moment';
+
+// Context
+import { AuthContext } from '../context/authContext';
 
 // Components
 import LikeButton from './LikeButton';
@@ -9,7 +12,9 @@ import DeleteButton from './DeleteButton';
 import CommentButton from './CommentButton';
 
 // These are the PostCards on the homepage ('/')
-const PostCard = ({ post: { id, username, body, createdAt, likeCount, likes, commentCount } }) => {
+const PostCard = ({ post }) => {
+  const { user } = useContext(AuthContext);
+
   return (
     <Card fluid>
       <Card.Content>
@@ -18,25 +23,27 @@ const PostCard = ({ post: { id, username, body, createdAt, likeCount, likes, com
           size='mini'
           src='https://react.semantic-ui.com/images/avatar/large/molly.png'
         />
-        <Card.Header>{username}</Card.Header>
+        <Card.Header>{post.username}</Card.Header>
 
         {/* Link to SinglePost */}
-        <Card.Meta as={Link} to={`/posts/${id}`}>
-          {moment(createdAt).fromNow()}
+        <Card.Meta as={Link} to={`/posts/${post.id}`}>
+          {moment(post.createdAt).fromNow()}
         </Card.Meta>
-        <Card.Description>{body}</Card.Description>
+        <Card.Description>{post.body}</Card.Description>
       </Card.Content>
 
       {/* Buttons - we only pass into each button what the button needs */}
       <Card.Content extra>
         {/* Like */}
-        <LikeButton post={{ id, likeCount, likes }} />
+        <LikeButton post={{ id: post.id, likeCount: post.likeCount, likes: post.likes }} />
 
         {/* Comment */}
-        <CommentButton post={{ id, commentCount }} />
+        <CommentButton post={{ id: post.id, commentCount: post.commentCount }} />
 
-        {/* Delete - the user from context is defined in the button itself */}
-        <DeleteButton post={{ id, username }} />
+        {/* Delete  */}
+        {user && user.username === post.username && (
+          <DeleteButton post={{ id: post.id, username: post.username }} />
+        )}
       </Card.Content>
     </Card>
   );
