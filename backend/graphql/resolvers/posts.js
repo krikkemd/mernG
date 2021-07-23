@@ -6,7 +6,7 @@ module.exports = {
   Query: {
     async getPosts(_, { limit, skip }, context) {
       console.log('getPosts');
-      // checkAuth(context);
+      checkAuth(context);
       try {
         const posts = Post.find().sort({ createdAt: -1 }).limit(limit).skip(skip);
         return posts;
@@ -20,7 +20,7 @@ module.exports = {
         if (post) {
           return post;
         } else {
-          throw new Error('post not found');
+          throw new Error('post not found or no longer exists');
         }
       } catch (error) {
         throw new Error(error);

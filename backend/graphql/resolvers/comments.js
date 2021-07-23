@@ -52,7 +52,7 @@ module.exports = {
         await post.save();
         return post;
       } else {
-        throw new UserInputError('post not found');
+        throw new UserInputError('post not found or no longer exists');
       }
     },
 

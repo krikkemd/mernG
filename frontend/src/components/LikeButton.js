@@ -51,7 +51,7 @@ const LikeButton = ({ post }) => {
       // getPosts query will run when pushed back to the homepage
       client.clearStore();
 
-      // getPosts query will run when on the homescreen when error
+      // getPosts query will run when you're ON the homescreen when error
       if (history.location.pathname === '/') {
         client.resetStore();
       }

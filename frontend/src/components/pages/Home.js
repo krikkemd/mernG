@@ -47,7 +47,7 @@ const Home = () => {
       {loading ? (
         <Loader active content='loading...' style={{ marginTop: '2rem' }} />
       ) : // user is set: Authenticated
-      user || !user ? (
+      user ? (
         <Grid columns={3} stackable divided='vertically'>
           <Grid.Row centered style={{ marginTop: '2rem', marginBottom: '2rem' }}>
             {/* Create Post Form */}

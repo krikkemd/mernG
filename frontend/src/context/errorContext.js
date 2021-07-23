@@ -1,7 +1,7 @@
 import React, { createContext, useReducer } from 'react';
 import { CLEAR_ERRORS, SET_ERROR } from './types';
 
-const initialState = { errors: {}, setErrors: error => {} };
+const initialState = { errors: {}, setErrors: error => {}, clearErrors: () => {} };
 
 const ErrorContext = createContext(initialState);
 

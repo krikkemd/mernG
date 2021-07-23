@@ -1,24 +1,58 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 
 // GQL
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_SINGLE_POST } from '../../graphql/posts';
+import { CREATE_COMMENT } from '../../graphql/comments';
 
 // Context
 import { AuthContext } from '../../context/authContext';
 import { ErrorContext } from '../../context/errorContext';
 
 // Semantic UI
-import { Card, Grid, Image, Loader, Transition } from 'semantic-ui-react';
+import { Card, Form, Grid, Image, Loader, Transition } from 'semantic-ui-react';
 import LikeButton from '../LikeButton';
 import DeleteButton from '../DeleteButton';
 import CommentButton from '../CommentButton';
 
 const SinglePost = props => {
   const { user } = useContext(AuthContext);
-  const { errors } = useContext(ErrorContext);
+  const { errors, setErrors, clearErrors } = useContext(ErrorContext);
+
+  const [comment, setComment] = useState('');
+  const commentInputRef = useRef(null);
+
   const postId = props.match.params.postId;
+
+  const [createComment, { client }] = useMutation(CREATE_COMMENT, {
+    update() {
+      setComment('');
+      commentInputRef.current.blur();
+    },
+    variables: {
+      postId,
+      body: comment,
+    },
+    onError(err) {
+      console.log(err.graphQLErrors[0].message);
+      setErrors(err.graphQLErrors[0].message);
+      clearErrors();
+
+      // If you just want the store to be cleared and don't want to refetch active queries, use client.clearStore()
+      // getPosts query will run when pushed back to the homepage
+      client.clearStore();
+
+      // getPosts query will run when you're ON the homescreen when error
+      if (props.history.location.pathname === '/') {
+        client.resetStore();
+      }
+
+      setTimeout(() => {
+        props.history.push('/');
+      }, 3000);
+    },
+  });
 
   let post;
 
@@ -103,6 +137,33 @@ const SinglePost = props => {
               </div>
             )}
           </Transition.Group>
+
+          {/* Comment Input */}
+          {user && (
+            <Card fluid>
+              <Card.Content>
+                <Form autoComplete='off'>
+                  <div className='ui action input fluid'>
+                    <input
+                      type='text'
+                      placeholder='Comment..'
+                      name='comment'
+                      value={comment}
+                      onChange={e => setComment(e.target.value)}
+                      ref={commentInputRef}
+                    />
+                    <button
+                      type='submit'
+                      className='ui button teal'
+                      disabled={comment.trim() === ''}
+                      onClick={createComment}>
+                      Submit
+                    </button>
+                  </div>
+                </Form>
+              </Card.Content>
+            </Card>
+          )}
 
           {/* Comments */}
           {post.comments.map(comment => (
