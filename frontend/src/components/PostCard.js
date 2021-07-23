@@ -29,7 +29,14 @@ const PostCard = ({ post }) => {
         <Card.Meta as={Link} to={`/posts/${post.id}`}>
           {moment(post.createdAt).fromNow()}
         </Card.Meta>
-        <Card.Description style={{ overflowWrap: 'break-word' }}>{post.body}</Card.Description>
+        <Card.Description
+          style={{
+            overflowWrap: 'break-word',
+            height: 150,
+            overflow: 'hidden',
+          }}>
+          {post.body}
+        </Card.Description>
       </Card.Content>
 
       {/* Buttons - we only pass into each button what the button needs */}
