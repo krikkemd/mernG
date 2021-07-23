@@ -56,12 +56,27 @@ const SinglePost = props => {
 
   let post;
 
-  const [myQueryExecutor, { called, loading, data }] = useLazyQuery(GET_SINGLE_POST, {
+  const [myQueryExecutor, { called, loading, data, error }] = useLazyQuery(GET_SINGLE_POST, {
     variables: {
       postId,
     },
     onError(err) {
-      console.log(err);
+      console.log(err.graphQLErrors[0]);
+      setErrors(err.graphQLErrors[0].message);
+      clearErrors();
+
+      // If you just want the store to be cleared and don't want to refetch active queries, use client.clearStore()
+      // getPosts query will run when pushed back to the homepage
+      client.clearStore();
+
+      // getPosts query will run when you're ON the homescreen when error
+      if (props.history.location.pathname === '/') {
+        client.resetStore();
+      }
+
+      setTimeout(() => {
+        props.history.push('/');
+      }, 3000);
     },
   });
 
@@ -70,6 +85,24 @@ const SinglePost = props => {
   useEffect(() => {
     myQueryExecutor();
   }, [myQueryExecutor]);
+
+  if (error) {
+    // console.log(error.graphQLErrors[0].message);
+    // setErrors(error.graphQLErrors[0].message);
+    return (
+      <Transition.Group animation='scale'>
+        {errors && Object.keys(errors).length > 0 && (
+          <div className='ui negative message'>
+            <ul>
+              {Object.values(errors).map(error => (
+                <li key={error}>{error}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </Transition.Group>
+    );
+  }
 
   if (!called || loading) {
     console.log('NOT CALLED OR LOADING!');
@@ -131,7 +164,7 @@ const SinglePost = props => {
               <div className='ui negative message'>
                 <ul>
                   {Object.values(errors).map(error => (
-                    <li>{error}</li>
+                    <li key={error}>{error}</li>
                   ))}
                 </ul>
               </div>
