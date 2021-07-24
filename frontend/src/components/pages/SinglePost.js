@@ -138,7 +138,9 @@ const SinglePost = props => {
               <Card.Meta>{moment(post.createdAt).fromNow()}</Card.Meta>
 
               {/* Post Body */}
-              <ReadMore component={Card.Description}>{post.body}</ReadMore>
+              <ReadMore maxTextLength={350} component={Card.Description}>
+                {post.body}
+              </ReadMore>
             </Card.Content>
 
             <hr />
@@ -212,7 +214,7 @@ const SinglePost = props => {
               <Card.Content>
                 <Card.Header>{comment.username}</Card.Header>
                 <Card.Meta>{moment(comment.createdAt).fromNow()}</Card.Meta>
-                <ReadMore component={Card.Description}>{comment.body}</ReadMore>
+                <ReadMore maxTextLength={200}>{comment.body}</ReadMore>
                 {user && user.username === comment.username && (
                   <DeleteButton
                     post={{ id: post.id }}
