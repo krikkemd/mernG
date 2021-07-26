@@ -45,7 +45,7 @@ const PostCard = ({ post }) => {
         <LikeButton post={{ id: post.id, likeCount: post.likeCount, likes: post.likes }} />
 
         {/* Comment */}
-        <CommentButton post={{ id: post.id, commentCount: post.commentCount }} />
+        <CommentButton post={{ id: post.id, commentCount: post.commentCount }} asElement={Link} />
 
         {/* Delete  */}
         {user && user.username === post.username && (

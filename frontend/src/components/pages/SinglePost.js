@@ -15,9 +15,10 @@ import ReadMore from '../ReadMore';
 import LikeButton from '../LikeButton';
 import DeleteButton from '../DeleteButton';
 import CommentButton from '../CommentButton';
+import ToolTip from '../ToolTip';
 
 // Semantic UI
-import { Card, Form, Grid, Image, Loader, Transition } from 'semantic-ui-react';
+import { Card, Form, Grid, Image, Loader, Popup, Transition } from 'semantic-ui-react';
 
 const SinglePost = props => {
   // Context

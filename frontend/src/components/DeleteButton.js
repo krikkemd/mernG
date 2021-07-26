@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Confirm } from 'semantic-ui-react';
+import { Button, Confirm, Popup } from 'semantic-ui-react';
 import { useMutation } from '@apollo/client';
 import { DELETE_POST, GET_POSTS } from '../graphql/posts';
 import { DELETE_COMMENT } from '../graphql/comments';
@@ -58,13 +58,19 @@ const DeleteButton = ({ post, comment }) => {
 
   return (
     <>
-      <Button
-        as='div'
-        onClick={() => setConfirmOpen(true)}
-        icon='trash'
-        color='red'
-        basic={true}
-        floated='right'
+      <Popup
+        inverted
+        content={comment?.id ? 'Delete comment' : 'Delete post'}
+        trigger={
+          <Button
+            as='div'
+            onClick={() => setConfirmOpen(true)}
+            icon='trash'
+            color='red'
+            basic={true}
+            floated='right'
+          />
+        }
       />
 
       {/* Confirm modal */}

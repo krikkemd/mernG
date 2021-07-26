@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { Link, useHistory, useParams } from 'react-router-dom';
-import { Button } from 'semantic-ui-react';
+import { Button, Popup } from 'semantic-ui-react';
 
 // Context
 import { AuthContext } from '../context/authContext';
@@ -69,32 +69,50 @@ const LikeButton = ({ post }) => {
   const likeButton = user ? (
     liked ? (
       // Already liked
-      <Button
-        onClick={() => likePost(post.id)}
-        color='teal'
-        icon='heart'
-        label={{ basic: liked, color: 'teal', pointing: 'left', content: post.likeCount }}
+      <Popup
+        inverted
+        content={liked ? 'Unlike' : 'Like'}
+        trigger={
+          <Button
+            onClick={() => likePost(post.id)}
+            color='teal'
+            icon='heart'
+            label={{ basic: liked, color: 'teal', pointing: 'left', content: post.likeCount }}
+          />
+        }
       />
     ) : (
       // Not yet liked
-      <Button
-        onClick={() => likePost(post.id)}
-        color='teal'
-        basic={true}
-        // content='Like'
-        icon='heart'
-        label={{ basic: true, color: 'teal', pointing: 'left', content: post.likeCount }}
+      <Popup
+        inverted
+        content={liked ? 'Unlike' : 'Like'}
+        trigger={
+          <Button
+            onClick={() => likePost(post.id)}
+            color='teal'
+            basic={true}
+            // content='Like'
+            icon='heart'
+            label={{ basic: true, color: 'teal', pointing: 'left', content: post.likeCount }}
+          />
+        }
       />
     )
   ) : (
     // Not Logged in
-    <Button
-      as={Link}
-      to='/login'
-      color='teal'
-      basic={true}
-      icon='heart'
-      label={{ basic: true, color: 'teal', pointing: 'left', content: post.likeCount }}
+    <Popup
+      inverted
+      content={liked ? 'Unlike' : 'Like'}
+      trigger={
+        <Button
+          as={Link}
+          to='/login'
+          color='teal'
+          basic={true}
+          icon='heart'
+          label={{ basic: true, color: 'teal', pointing: 'left', content: post.likeCount }}
+        />
+      }
     />
   );
 
