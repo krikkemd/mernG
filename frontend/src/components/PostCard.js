@@ -18,11 +18,7 @@ const PostCard = ({ post }) => {
   return (
     <Card fluid>
       <Card.Content>
-        <Image
-          floated='right'
-          size='mini'
-          src='https://react.semantic-ui.com/images/avatar/large/molly.png'
-        />
+        <Image floated='right' size='mini' src={user.avatar} />
         <Card.Header>{post.username}</Card.Header>
 
         {/* Link to SinglePost */}

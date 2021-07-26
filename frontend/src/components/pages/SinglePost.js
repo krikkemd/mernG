@@ -95,11 +95,7 @@ const SinglePost = props => {
       <Grid.Row>
         <Grid.Column width={2}>
           {/* Post User Image */}
-          <Image
-            size='small'
-            floated='right'
-            src='https://react.semantic-ui.com/images/avatar/large/molly.png'
-          />
+          <Image size='small' floated='right' src={user.avatar} />
         </Grid.Column>
         <Grid.Column width={10}>
           <Card fluid>
@@ -156,11 +152,7 @@ const SinglePost = props => {
           {post.comments.map(comment => (
             <Card fluid key={comment.id}>
               <Card.Content>
-                <Image
-                  size='mini'
-                  floated='right'
-                  src='https://react.semantic-ui.com/images/avatar/large/molly.png'
-                />
+                <Image size='mini' floated='right' src={user.avatar} />
                 <Card.Header>{comment.username}</Card.Header>
                 <Card.Meta>{moment(comment.createdAt).fromNow()}</Card.Meta>
                 <ReadMore maxTextLength={200}>{comment.body}</ReadMore>

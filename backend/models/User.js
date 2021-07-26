@@ -17,6 +17,10 @@ const userSchema = new Schema({
     type: String,
     select: false,
   },
+  avatar: {
+    type: String,
+    default: 'https://react.semantic-ui.com/images/avatar/large/matthew.png',
+  },
   refTokenVersion: {
     type: Number,
     default: 0,

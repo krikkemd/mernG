@@ -6,6 +6,7 @@ exports.generateAccessToken = user => {
       id: user.id,
       username: user.username,
       email: user.email,
+      avatar: user.avatar,
     },
     process.env.JWT_SECRET,
     {
