@@ -1,7 +1,7 @@
 const { model, Schema } = require('mongoose');
 
 const postSchema = new Schema({
-  body: 'string',
+  body: { type: String, maxLength: [3000, 'a post can only have 3000 characters'] },
   username: 'string',
   createdAt: 'string',
   comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }], // array

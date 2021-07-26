@@ -4,7 +4,10 @@ const Post = require('./Post');
 
 const commentSchema = new Schema({
   post: { type: Schema.Types.ObjectId, ref: 'Post' },
-  body: String,
+  body: {
+    type: String,
+    maxLength: [2000, 'a comment can only have 2000 characters'],
+  },
   username: String,
   createdAt: String,
 });

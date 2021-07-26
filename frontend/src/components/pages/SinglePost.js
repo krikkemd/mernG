@@ -2,9 +2,8 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 
 // GQL
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { GET_SINGLE_POST } from '../../graphql/posts';
-import { CREATE_COMMENT } from '../../graphql/comments';
 
 // Context
 import { AuthContext } from '../../context/authContext';
@@ -15,10 +14,10 @@ import ReadMore from '../ReadMore';
 import LikeButton from '../LikeButton';
 import DeleteButton from '../DeleteButton';
 import CommentButton from '../CommentButton';
-import ToolTip from '../ToolTip';
 
 // Semantic UI
-import { Card, Form, Grid, Image, Loader, Popup, Transition } from 'semantic-ui-react';
+import { Card, Form, Grid, Image, Loader, Transition } from 'semantic-ui-react';
+import CommentInput from '../CommentInput';
 
 const SinglePost = props => {
   // Context
@@ -26,65 +25,36 @@ const SinglePost = props => {
   const { errors, setErrors, clearErrors } = useContext(ErrorContext);
 
   // Local State
-  const [comment, setComment] = useState('');
-  const commentInputRef = useRef(null);
-
   const postId = props.match.params.postId;
-
-  const [createComment, { client }] = useMutation(CREATE_COMMENT, {
-    update() {
-      setComment('');
-      commentInputRef.current.blur();
-    },
-    variables: {
-      postId,
-      body: comment,
-    },
-    onError(err) {
-      console.log(err.graphQLErrors[0].message);
-      setErrors(err.graphQLErrors[0].message);
-      clearErrors();
-
-      // If you just want the store to be cleared and don't want to refetch active queries, use client.clearStore()
-      // getPosts query will run when pushed back to the homepage
-      client.clearStore();
-
-      // getPosts query will run when you're ON the homescreen when error
-      if (props.history.location.pathname === '/') {
-        client.resetStore();
-      }
-
-      setTimeout(() => {
-        props.history.push('/');
-      }, 3000);
-    },
-  });
 
   let post;
 
-  const [myQueryExecutor, { called, loading, data, error }] = useLazyQuery(GET_SINGLE_POST, {
-    variables: {
-      postId,
+  const [myQueryExecutor, { called, loading, data, error, client }] = useLazyQuery(
+    GET_SINGLE_POST,
+    {
+      variables: {
+        postId,
+      },
+      onError(err) {
+        console.log(err.graphQLErrors[0]);
+        setErrors(err.graphQLErrors[0].message);
+        clearErrors();
+
+        // If you just want the store to be cleared and don't want to refetch active queries, use client.clearStore()
+        // getPosts query will run when pushed back to the homepage
+        client.clearStore();
+
+        // getPosts query will run when you're ON the homescreen when error
+        if (props.history.location.pathname === '/') {
+          client.resetStore();
+        }
+
+        setTimeout(() => {
+          props.history.push('/');
+        }, 3000);
+      },
     },
-    onError(err) {
-      console.log(err.graphQLErrors[0]);
-      setErrors(err.graphQLErrors[0].message);
-      clearErrors();
-
-      // If you just want the store to be cleared and don't want to refetch active queries, use client.clearStore()
-      // getPosts query will run when pushed back to the homepage
-      client.clearStore();
-
-      // getPosts query will run when you're ON the homescreen when error
-      if (props.history.location.pathname === '/') {
-        client.resetStore();
-      }
-
-      setTimeout(() => {
-        props.history.push('/');
-      }, 3000);
-    },
-  });
+  );
 
   // console.log(NetworkStatus);
 
@@ -180,39 +150,17 @@ const SinglePost = props => {
           </Transition.Group>
 
           {/* Comment Input */}
-          {user && (
-            <Card fluid>
-              <Card.Header as='h3' textAlign='center' style={{ padding: 20 }}>
-                Leave a Comment
-              </Card.Header>
-              <Card.Content>
-                <Form autoComplete='off'>
-                  <div className='ui action input fluid'>
-                    <input
-                      type='text'
-                      placeholder='Comment..'
-                      name='comment'
-                      value={comment}
-                      onChange={e => setComment(e.target.value)}
-                      ref={commentInputRef}
-                    />
-                    <button
-                      type='submit'
-                      className='ui button teal'
-                      disabled={comment.trim() === ''}
-                      onClick={createComment}>
-                      Submit
-                    </button>
-                  </div>
-                </Form>
-              </Card.Content>
-            </Card>
-          )}
+          <CommentInput user={user} postId={postId} history={props.history} />
 
           {/* Comments */}
           {post.comments.map(comment => (
             <Card fluid key={comment.id}>
               <Card.Content>
+                <Image
+                  size='mini'
+                  floated='right'
+                  src='https://react.semantic-ui.com/images/avatar/large/molly.png'
+                />
                 <Card.Header>{comment.username}</Card.Header>
                 <Card.Meta>{moment(comment.createdAt).fromNow()}</Card.Meta>
                 <ReadMore maxTextLength={200}>{comment.body}</ReadMore>
