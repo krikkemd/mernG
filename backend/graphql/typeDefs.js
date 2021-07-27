@@ -4,9 +4,9 @@ module.exports = gql`
   scalar Upload
 
   type File {
-    filename: String
-    mimetype: String
-    encoding: String
+    # filename: String
+    # mimetype: String
+    # encoding: String
     url: String!
   }
 

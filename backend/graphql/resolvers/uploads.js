@@ -1,4 +1,4 @@
-// const checkAuth = require('../../util/check-auth');
+const checkAuth = require('../../util/check-auth');
 const { GraphQLUpload } = require('graphql-upload');
 const { UserInputError } = require('apollo-server-express');
 const path = require('path');
@@ -10,6 +10,9 @@ module.exports = {
   Mutation: {
     singleUpload: async (parent, { file }, context) => {
       console.log('running singleUpload');
+
+      checkAuth(context);
+
       const { createReadStream, filename, mimetype, encoding } = await file;
 
       if (!mimetype.startsWith('image')) {
@@ -21,14 +24,15 @@ module.exports = {
 
       const extensions = ['.jpg', '.JPG', '.png', '.PNG', '.jpeg', '.JPEG'];
 
+      // replace image extension with .webp
       let name;
       extensions.map(extension => {
         if (filename.includes(extension)) {
-          console.log(true);
           name = `userId-${Date.now()}-${filename.replace(extension, '.webp')}`;
         }
       });
 
+      // Crop img
       const sharpImage = sharp(image)
         .resize(200, 200)
         .toFormat('webp')
@@ -46,9 +50,6 @@ module.exports = {
 
       return {
         url: `http://localhost:4000/images/${name}`,
-        filename: name,
-        mimetype,
-        encoding,
       };
     },
   },

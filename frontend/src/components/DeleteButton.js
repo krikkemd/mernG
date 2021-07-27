@@ -7,7 +7,6 @@ import { DELETE_COMMENT } from '../graphql/comments';
 import { useParams, useHistory } from 'react-router-dom';
 
 const DeleteButton = ({ post, comment }) => {
-  console.log(comment);
   const [confirmOpen, setConfirmOpen] = useState(false);
   // const [mutation, setMutation] = useState('');
   let mutation;
