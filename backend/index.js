@@ -1,6 +1,8 @@
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const mongoose = require('mongoose');
+const { graphqlUploadExpress } = require('graphql-upload');
+
 require('dotenv').config();
 
 const typeDefs = require('./graphql/typeDefs');
@@ -99,8 +101,11 @@ async function startApolloServer() {
   });
 
   // Mount Apollo middleware here.
+  app.use(graphqlUploadExpress());
   // server.applyMiddleware({ app, path: '/specialUrl' });
   server.applyMiddleware({ app, cors: false }); // DISABLE CORS FROM APOLLO FOR EXPRESS TO WORK!!!
+
+  app.use(express.static('public'));
 
   // await new Promise(resolve => app.listen({ port: 4000 }, resolve));
 

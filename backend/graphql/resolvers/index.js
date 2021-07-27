@@ -2,6 +2,7 @@ const postsResolvers = require('./posts');
 const usersResolvers = require('./users');
 const commentsResolvers = require('./comments');
 const byeResolvers = require('./bye');
+const uploadResolvers = require('./uploads');
 
 module.exports = {
   /* Modifier for Post(name of the type)
@@ -24,8 +25,12 @@ module.exports = {
     ...usersResolvers.Mutation,
     ...postsResolvers.Mutation,
     ...commentsResolvers.Mutation,
+    ...uploadResolvers.Mutation,
   },
   Subscription: {
     ...postsResolvers.Subscription,
+  },
+  Upload: {
+    ...uploadResolvers.Upload,
   },
 };

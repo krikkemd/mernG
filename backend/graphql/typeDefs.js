@@ -1,6 +1,15 @@
 const { gql } = require('apollo-server-express');
 
 module.exports = gql`
+  scalar Upload
+
+  type File {
+    filename: String
+    mimetype: String
+    encoding: String
+    url: String!
+  }
+
   type Post {
     id: ID!
     body: String!
@@ -56,6 +65,7 @@ module.exports = gql`
     createComment(postId: ID!, body: String!): Post!
     deleteComment(postId: ID!, commentId: ID!): Post!
     likePost(postId: ID!): Post!
+    singleUpload(file: Upload!): File!
   }
 
   type Subscription {

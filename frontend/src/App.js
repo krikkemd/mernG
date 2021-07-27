@@ -13,6 +13,7 @@ import SinglePost from './components/pages/SinglePost';
 // Components
 import MenuBar from './components/MenuBar';
 import AuthRoute from './components/AuthRoute';
+import UploadForm from './components/pages/UploadForm';
 
 // CSS Components
 import { Container } from 'semantic-ui-react';
@@ -31,6 +32,7 @@ function App() {
             {/* Menubar on every page */}
             <MenuBar />
             <Route exact path='/' render={props => <Home {...props} />} />
+            <Route exact path='/upload' component={UploadForm} />
             <AuthRoute extra={'pass props here'} exact path='/login' component={Login} />
             <AuthRoute exact path='/register' component={UseFormRegister} />
             <Route exact path='/posts/:postId' component={SinglePost} />
