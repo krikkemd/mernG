@@ -10,9 +10,10 @@ const CommentInput = ({ user, postId, history }) => {
   const { errors, setErrors, clearErrors } = useContext(ErrorContext);
 
   const [createComment, { client }] = useMutation(CREATE_COMMENT, {
-    update() {
+    update(cache, result) {
       setComment('');
       commentInputRef.current.blur();
+      console.log(result);
     },
     variables: {
       postId,

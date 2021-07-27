@@ -18,6 +18,8 @@ export const GET_POSTS = gql`
       comments {
         id
         username
+        userId
+        avatar
         body
         createdAt
       }
@@ -45,6 +47,8 @@ export const GET_SINGLE_POST = gql`
         id
         body
         username
+        userId
+        avatar
         createdAt
       }
     }

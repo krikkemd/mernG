@@ -27,7 +27,7 @@ postSchema.pre(/^find/, function (next) {
   console.log('pre find post -> populate comments');
   this.populate({
     path: 'comments',
-    select: 'post username body createdAt',
+    select: 'post username userId avatar body createdAt',
   });
   // .populate({
   //   path: 'users',

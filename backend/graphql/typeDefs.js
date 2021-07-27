@@ -27,6 +27,8 @@ module.exports = gql`
     id: ID!
     post: ID!
     username: String!
+    userId: ID!
+    avatar: String!
     body: String!
     createdAt: String!
   }

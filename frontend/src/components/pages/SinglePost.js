@@ -152,11 +152,11 @@ const SinglePost = props => {
           {post.comments.map(comment => (
             <Card fluid key={comment.id}>
               <Card.Content>
-                <Image size='mini' floated='right' src={user.avatar} />
+                <Image size='mini' floated='right' src={comment.avatar} />
                 <Card.Header>{comment.username}</Card.Header>
                 <Card.Meta>{moment(comment.createdAt).fromNow()}</Card.Meta>
                 <ReadMore maxTextLength={200}>{comment.body}</ReadMore>
-                {user && user.username === comment.username && (
+                {user && user.id === comment.userId && (
                   <DeleteButton
                     post={{ id: post.id }}
                     comment={{ id: comment.id, username: comment.username }}

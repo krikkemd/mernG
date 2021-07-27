@@ -6,6 +6,7 @@ const path = require('path');
 // const fs = require('fs');
 const sharp = require('sharp');
 const Post = require('../../models/Post');
+const Comment = require('../../models/Comment');
 
 module.exports = {
   Upload: GraphQLUpload,
@@ -56,8 +57,9 @@ module.exports = {
         user.avatar = `http://localhost:4000/images/${name}`;
         await user.save();
 
-        // update all posts avatars where the post.userId === logged in user._id
+        // update all posts & comment avatars where the post.userId === logged in user._id
         await updateAvatarInPosts(user);
+        await updateAvatarInComments(user);
 
         // Return new avatar url
         return {
@@ -84,7 +86,7 @@ const streamToString = stream => {
 async function updateAvatarInPosts(user) {
   try {
     const posts = await Post.find({ userId: user._id });
-    console.log(posts);
+    // console.log(posts);
 
     if (!posts.length) {
       console.log('no posts found to update avatar');
@@ -94,6 +96,24 @@ async function updateAvatarInPosts(user) {
     posts.map(async post => {
       post.avatar = user.avatar;
       await post.save();
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+async function updateAvatarInComments(user) {
+  try {
+    const comments = await Comment.find({ userId: user._id });
+    console.log(comments);
+
+    if (!comments.length) {
+      console.log('no comments found to update avatar');
+      return;
+    }
+
+    comments.map(async comment => {
+      comment.avatar = user.avatar;
+      await comment.save();
     });
   } catch (err) {
     console.log(err);

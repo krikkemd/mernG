@@ -8,6 +8,8 @@ export const CREATE_COMMENT = gql`
         id
         body
         username
+        userId
+        avatar
         createdAt
       }
       commentCount

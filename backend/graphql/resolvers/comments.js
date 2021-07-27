@@ -9,7 +9,12 @@ module.exports = {
     createComment: async (parent, { postId, body }, context) => {
       // 1) Check if user is logged in
       console.log(checkAuth(context));
-      const { username } = checkAuth(context); // we can destructure the username from what checkAuth() returns: user
+      const { username, id, avatar } = checkAuth(context); // we can destructure the username from what checkAuth() returns: user
+
+      console.log('usrId:');
+      console.log(id);
+      console.log('avatar:');
+      console.log(avatar);
 
       if (body.trim() === '') {
         throw new UserInputError('empty comment', {
@@ -19,34 +24,17 @@ module.exports = {
         });
       }
 
-      console.log(removeWhiteSpace(body));
-      console.log(removeWhiteSpace(body).length);
-
-      // if (removeWhiteSpace(body).length > 27) {
-      //   throw new UserInputError('Too many characters in a row', {
-      //     errors: {
-      //       body: 'Too many characters in a row',
-      //     },
-      //   });
-      // }
       // 2) try to find the post that the user is commenting on
       const post = await Post.findById(postId);
 
       if (post) {
-        // const newComment = new Comment({
-        // post: postId,
-        // body,
-        // username,
-        // createdAt: new Date().toISOString(),
-        // });
-
-        // const comment = await newComment.save();
-
         // 3) if there is a post, create the comment
         const comment = await Comment.create({
           post: postId,
           body,
           username,
+          userId: id,
+          avatar,
           createdAt: new Date().toISOString(),
         });
 
@@ -56,6 +44,8 @@ module.exports = {
           post: postId,
           body,
           username,
+          userId: id,
+          avatar,
           createdAt: new Date().toISOString(),
         });
 
