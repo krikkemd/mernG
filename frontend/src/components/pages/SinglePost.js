@@ -95,7 +95,7 @@ const SinglePost = props => {
       <Grid.Row>
         <Grid.Column width={2}>
           {/* Post User Image */}
-          <Image size='small' floated='right' src={user.avatar} />
+          <Image size='small' floated='right' src={post.avatar} />
         </Grid.Column>
         <Grid.Column width={10}>
           <Card fluid>

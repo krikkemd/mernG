@@ -6,7 +6,7 @@ module.exports = {
   Query: {
     async getPosts(_, { limit, skip }, context) {
       console.log('getPosts');
-      checkAuth(context);
+      // checkAuth(context);
       try {
         const posts = Post.find().sort({ createdAt: -1 }).limit(limit).skip(skip);
         return posts;
@@ -43,6 +43,7 @@ module.exports = {
         body,
         user: user.id,
         username: user.username,
+        avatar: user.avatar,
         createdAt: new Date().toISOString(),
       });
 

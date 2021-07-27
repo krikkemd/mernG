@@ -1,9 +1,11 @@
 const checkAuth = require('../../util/check-auth');
 const { GraphQLUpload } = require('graphql-upload');
 const { UserInputError } = require('apollo-server-express');
+const User = require('../../models/User');
 const path = require('path');
 // const fs = require('fs');
 const sharp = require('sharp');
+const Post = require('../../models/Post');
 
 module.exports = {
   Upload: GraphQLUpload,
@@ -11,46 +13,70 @@ module.exports = {
     singleUpload: async (parent, { file }, context) => {
       console.log('running singleUpload');
 
-      checkAuth(context);
+      // check if user is logged in
+      const { id } = checkAuth(context);
 
-      const { createReadStream, filename, mimetype, encoding } = await file;
+      try {
+        // Find the user in the db
+        let user = await User.findOne({ _id: id });
 
-      if (!mimetype.startsWith('image')) {
-        return new UserInputError('file should be an image');
-      }
+        if (!user) return new Error('error uploading file, user not found');
 
-      const stream = createReadStream();
-      const image = await streamToString(stream);
+        // await the file
+        const { createReadStream, filename, mimetype } = await file;
 
-      const extensions = ['.jpg', '.JPG', '.png', '.PNG', '.jpeg', '.JPEG'];
-
-      // replace image extension with .webp
-      let name;
-      extensions.map(extension => {
-        if (filename.includes(extension)) {
-          name = `userId-${Date.now()}-${filename.replace(extension, '.webp')}`;
+        // return error when file isnt an image
+        if (!mimetype.startsWith('image')) {
+          return new UserInputError('file should be an image');
         }
-      });
 
-      // Crop img
-      const sharpImage = sharp(image)
-        .resize(200, 200)
-        .toFormat('webp')
-        .webp({ quality: 90 })
-        .toFile(path.join(__dirname, `../../public/images/${name}`));
+        // Create stream and streamToString to pass to sharp
+        const stream = createReadStream();
+        const image = await streamToString(stream);
 
-      // Invoking the `createReadStream` will return a Readable Stream.
-      // See https://nodejs.org/api/stream.html#stream_readable_streams
-      // const pathName = path.join(__dirname, `../../public/images/${filename}`);
+        // Some img extensions
+        const extensions = ['.jpg', '.JPG', '.png', '.PNG', '.jpeg', '.JPEG'];
 
-      //   console.log(__dirname);
-      //   console.log(pathName);
+        // replace image extensions with .webp
+        let name;
+        extensions.map(extension => {
+          if (filename.includes(extension)) {
+            name = `userId-${Date.now()}-${filename.replace(extension, '.webp')}`;
+          }
+        });
 
-      // await stream.pipe(fs.createWriteStream(pathName));
+        // Crop img
+        const sharpImage = sharp(image)
+          .resize(200, 200)
+          .toFormat('webp')
+          .webp({ quality: 90 })
+          .toFile(path.join(__dirname, `../../public/images/${name}`));
 
-      return {
-        url: `http://localhost:4000/images/${name}`,
-      };
+        // Invoking the `createReadStream` will return a Readable Stream.
+        // See https://nodejs.org/api/stream.html#stream_readable_streams
+        // const pathName = path.join(__dirname, `../../public/images/${filename}`);
+
+        //   console.log(__dirname);
+        //   console.log(pathName);
+
+        // await stream.pipe(fs.createWriteStream(pathName));
+
+        user.avatar = `http://localhost:4000/images/${name}`;
+
+        // Update user avatar inside DB users collection
+        await user.save();
+
+        // update all posts avatars where the post.username === logged in user.username
+        await updateAvatarInPosts(user);
+
+        // Return new avatar url
+        return {
+          url: user.avatar,
+        };
+      } catch (err) {
+        console.log(err);
+        return new Error('error uploading file, user not found');
+      }
     },
   },
 };
@@ -64,3 +90,22 @@ const streamToString = stream => {
     stream.on('end', () => resolve(Buffer.concat(chunks)));
   });
 };
+
+async function updateAvatarInPosts(user) {
+  try {
+    const posts = await Post.find({ username: user.username });
+    console.log(posts);
+
+    if (!posts.length) {
+      console.log('no posts found to update avatar');
+      return;
+    }
+
+    posts.map(async post => {
+      post.avatar = user.avatar;
+      await post.save();
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}

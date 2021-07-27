@@ -5,6 +5,7 @@ export const GET_POSTS = gql`
     getPosts(limit: $limit, skip: $skip) {
       id
       username
+      avatar
       body
       likeCount
       commentCount
@@ -29,6 +30,7 @@ export const GET_SINGLE_POST = gql`
       id
       body
       username
+      avatar
       createdAt
       likeCount
 
@@ -52,6 +54,7 @@ export const CREATE_POST = gql`
     createPost(body: $body) {
       id
       username
+      avatar
       body
       createdAt
       likeCount

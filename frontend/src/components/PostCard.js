@@ -14,11 +14,12 @@ import CommentButton from './CommentButton';
 // These are the PostCards on the homepage ('/')
 const PostCard = ({ post }) => {
   const { user } = useContext(AuthContext);
+  console.log(post);
 
   return (
     <Card fluid>
       <Card.Content>
-        <Image floated='right' size='mini' src={user.avatar} />
+        <Image floated='right' size='mini' src={post.avatar} />
         <Card.Header>{post.username}</Card.Header>
 
         {/* Link to SinglePost */}

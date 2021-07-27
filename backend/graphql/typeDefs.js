@@ -15,6 +15,7 @@ module.exports = gql`
     body: String!
     createdAt: String!
     username: String!
+    avatar: String
     comments: [Comment]!
     likes: [Like]!
     likeCount: Int!

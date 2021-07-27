@@ -52,6 +52,7 @@ const CreatePostForm = () => {
       console.log(data);
     },
     onError(err) {
+      console.log(err);
       console.log(err.graphQLErrors[0]);
       setErrors({ ...errors, general: err.graphQLErrors[0].message });
     },
