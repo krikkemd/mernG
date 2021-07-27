@@ -13,11 +13,11 @@ module.exports = {
     singleUpload: async (parent, { file }, context) => {
       console.log('running singleUpload');
 
-      // check if user is logged in
+      // check if user is logged in, and get the user id
       const { id } = checkAuth(context);
 
       try {
-        // Find the user in the db
+        // Find the user in the db with the user's id
         let user = await User.findOne({ _id: id });
 
         if (!user) return new Error('error uploading file, user not found');
@@ -52,21 +52,11 @@ module.exports = {
           .webp({ quality: 90 })
           .toFile(path.join(__dirname, `../../public/images/${name}`));
 
-        // Invoking the `createReadStream` will return a Readable Stream.
-        // See https://nodejs.org/api/stream.html#stream_readable_streams
-        // const pathName = path.join(__dirname, `../../public/images/${filename}`);
-
-        //   console.log(__dirname);
-        //   console.log(pathName);
-
-        // await stream.pipe(fs.createWriteStream(pathName));
-
-        user.avatar = `http://localhost:4000/images/${name}`;
-
         // Update user avatar inside DB users collection
+        user.avatar = `http://localhost:4000/images/${name}`;
         await user.save();
 
-        // update all posts avatars where the post.username === logged in user.username
+        // update all posts avatars where the post.userId === logged in user._id
         await updateAvatarInPosts(user);
 
         // Return new avatar url
@@ -93,7 +83,7 @@ const streamToString = stream => {
 
 async function updateAvatarInPosts(user) {
   try {
-    const posts = await Post.find({ username: user.username });
+    const posts = await Post.find({ userId: user._id });
     console.log(posts);
 
     if (!posts.length) {

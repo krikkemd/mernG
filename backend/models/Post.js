@@ -3,6 +3,10 @@ const { model, Schema } = require('mongoose');
 const postSchema = new Schema({
   body: { type: String, maxLength: [3000, 'a post can only have 3000 characters'] },
   username: 'string',
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'users',
+  },
   avatar: 'string',
   createdAt: 'string',
   comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }], // array
@@ -25,6 +29,10 @@ postSchema.pre(/^find/, function (next) {
     path: 'comments',
     select: 'post username body createdAt',
   });
+  // .populate({
+  //   path: 'users',
+  //   select: 'userId',
+  // });
   next();
 });
 
