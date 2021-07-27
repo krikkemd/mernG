@@ -9,6 +9,7 @@ const UploadForm = () => {
     },
     onError(err) {
       console.log(err);
+      console.log(err.graphQLErrors);
     },
   });
 
