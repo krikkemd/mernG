@@ -14,7 +14,6 @@ import CommentButton from './CommentButton';
 // These are the PostCards on the homepage ('/')
 const PostCard = ({ post }) => {
   const { user } = useContext(AuthContext);
-  console.log(post);
 
   return (
     <Card fluid>

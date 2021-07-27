@@ -42,7 +42,7 @@ module.exports = {
         let name;
         extensions.map(extension => {
           if (filename.includes(extension)) {
-            name = `userId-${Date.now()}-${filename.replace(extension, '.webp')}`;
+            name = `${user.username}-${Date.now()}-${filename.replace(extension, '.webp')}`;
           }
         });
 
