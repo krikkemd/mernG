@@ -5,16 +5,11 @@ import { SINGLE_UPLOAD } from '../../graphql/uploads';
 import { AuthContext } from '../../context/authContext';
 
 const UploadForm = () => {
-  const { user, contextSingleUpload } = useContext(AuthContext);
+  const { user, refreshToken } = useContext(AuthContext);
   const [singleUpload, { client }] = useMutation(SINGLE_UPLOAD, {
     update(cache, result) {
       const { url } = result?.data.singleUpload;
       console.log(url);
-
-      console.log(result);
-
-      // update the current logged in user's avatar url inside the context
-      if (url) contextSingleUpload(url);
 
       // read the posts that are currently cached (read-only)
       const postsCache = client.readQuery({ query: GET_POSTS });
@@ -34,7 +29,7 @@ const UploadForm = () => {
         });
       });
 
-      //Check if the value is updated.
+      // Check if the value is updated.
       console.log(copiedPostsCache);
 
       // update the cache with the avatar, no need to go to the server
@@ -50,6 +45,12 @@ const UploadForm = () => {
     onError(err) {
       console.log(err);
       console.log(err.graphQLErrors);
+    },
+    onCompleted() {
+      // We need to run refreshToken to re-fetch the current user from the DB cause the user is destructured from the accessToken. to get the latest uploaded avatar.
+      // Else we get the old avatar on CREATE_POST / CREATE_COMMENT, because the user is passed in server side inside the resolvers.
+      // (checkAuth gets the old, but still valid token with the old avatar stored in memory)
+      refreshToken();
     },
   });
 

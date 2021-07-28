@@ -1,5 +1,5 @@
 import { createContext, useReducer, useEffect, useState } from 'react';
-import { LOGIN_USER, LOGOUT_USER, SINGLE_UPLOAD } from './types';
+import { LOGIN_USER, LOGOUT_USER } from './types';
 import { setAccessTokenInMemory } from '../util/accessToken';
 import { Loader } from 'semantic-ui-react';
 import jwtDecode from 'jwt-decode';
@@ -8,7 +8,6 @@ const initialState = {
   user: null,
   contextLogin: userData => {},
   contextLogout: () => {},
-  contextSingleUpload: avatarUrl => {},
 };
 
 // used in components to access context
@@ -25,14 +24,6 @@ const authReducer = (state, action) => {
       return {
         ...state,
         user: null,
-      };
-    case SINGLE_UPLOAD:
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          avatar: action.payload,
-        },
       };
     default:
       return state;
@@ -100,17 +91,13 @@ function AuthProvider(props) {
     dispatch({ type: LOGOUT_USER });
   };
 
-  const contextSingleUpload = avatarUrl => {
-    dispatch({ type: SINGLE_UPLOAD, payload: avatarUrl });
-  };
-
   if (loading || loadOnLogin) {
     return <Loader active content='loading...'></Loader>;
   }
 
   return (
     <AuthContext.Provider
-      value={{ user: state.user, contextLogin, contextLogout, contextSingleUpload, refreshToken }}
+      value={{ user: state.user, contextLogin, contextLogout, refreshToken }}
       {...props}
     />
   );
